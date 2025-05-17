@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/auth-context";
+import type { IUser } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
@@ -33,12 +34,12 @@ export const useLoginForm = () => {
     const onLogin = async (data: LoginFormValues) => {
         try {
             await login(data.email, data.password);
-            const response = await getCurrentUser();
+            const response = await getCurrentUser() as IUser;
             if (response) {
                 navigate({
                     to: "/profile/$userId",
                     
-                    params: { userId: response.payload.user?.id || "" },
+                    params: { userId: response.id || "" },
                 })
             } else {
                 form.setError("email", { message: response });

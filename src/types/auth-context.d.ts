@@ -10,7 +10,7 @@ export interface IAuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; user?: IUser; error?: string }>;
   logout: () => Promise<{ success: boolean; error?: string }>;
   register: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  getCurrentUser: () => Promise<IUserResponse>;
+  getCurrentUser: () => Promise<IUser, Error>;
   error: string | null;
   clearError: () => void;
 }
