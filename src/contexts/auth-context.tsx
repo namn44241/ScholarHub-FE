@@ -157,9 +157,9 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
       return await authService.getCurrentUser();
     },
     onSuccess: (response) => {
-      if (response.success && response.payload.user) {
+      if (response.success) {
         saveUserData(response.payload.user);
-        return { success: true, user: response.payload.user };
+        return { response};
       }
       return { success: false, error: "Failed to get user data" };
     },
@@ -186,7 +186,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
   };
 
   const getCurrentUser = async () => {
-    return await getCurrentUserMutation.mutateAsync();
+    return await getCurrentUserMutation.mutateAsync()
   };
 
   const checkCurrentUser = (userId: string): boolean => {

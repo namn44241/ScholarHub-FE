@@ -1,7 +1,12 @@
-import { apiClient, customFetch } from "@/lib/fetch";
+import { apiClient } from "@/lib/fetch";
 import { authTokenManagement } from "@/lib/utils";
 import type { IUser } from "@/types/user";
-import { GET_USER_API, LOGIN_API, REGISTER_API } from "@/utils/endpoints";
+import {
+  BACKEND_API,
+  GET_USER_API,
+  LOGIN_API,
+  REGISTER_API,
+} from "@/utils/endpoints";
 
 export interface ILoginResponse {
   success: boolean;
@@ -90,25 +95,27 @@ export const authService = {
     username: string,
     password: string
   ): Promise<ILoginResponse> => {
-    // For FormData requests, we need to create a FormData object
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
 
-    // Use apiClient with FormData options
-    const response = await customFetch(LOGIN_API, {
+    const response = await fetch(`${BACKEND_API}${LOGIN_API}`, {
       method: "POST",
       body: formData,
-      headers: {
-        // Remove Content-Type so browser can set it with boundary
-      },
-      skipAuth: true, // Login doesn't need existing auth token
     });
 
-    const { access_token, refresh_token } = response.payload;
-    authTokenManagement.setTokens(access_token, refresh_token);
+    const data = await response.json();
 
-    return response;
+    if (
+      data.payload &&
+      data.payload.access_token &&
+      data.payload.refresh_token
+    ) {
+      const { access_token, refresh_token } = data.payload;
+      authTokenManagement.setTokens(access_token, refresh_token);
+    }
+
+    return data;
   },
 
   register: async (userData: {

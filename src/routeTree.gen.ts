@@ -13,9 +13,12 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as TermOfServiceImport } from './routes/term-of-service'
 import { Route as PrivacyPolicyImport } from './routes/privacy-policy'
+import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthRegisterImport } from './routes/auth/register'
 import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AuthScholarshipSearchImport } from './routes/_auth.scholarship-search'
+import { Route as AuthProfileUserIdImport } from './routes/_auth.profile/$userId'
 
 // Create/Update Routes
 
@@ -28,6 +31,11 @@ const TermOfServiceRoute = TermOfServiceImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -49,6 +57,18 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AuthScholarshipSearchRoute = AuthScholarshipSearchImport.update({
+  id: '/scholarship-search',
+  path: '/scholarship-search',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthProfileUserIdRoute = AuthProfileUserIdImport.update({
+  id: '/profile/$userId',
+  path: '/profile/$userId',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -58,6 +78,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
     '/privacy-policy': {
@@ -74,6 +101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermOfServiceImport
       parentRoute: typeof rootRoute
     }
+    '/_auth/scholarship-search': {
+      id: '/_auth/scholarship-search'
+      path: '/scholarship-search'
+      fullPath: '/scholarship-search'
+      preLoaderRoute: typeof AuthScholarshipSearchImport
+      parentRoute: typeof AuthImport
+    }
     '/auth/login': {
       id: '/auth/login'
       path: '/auth/login'
@@ -88,63 +122,101 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRegisterImport
       parentRoute: typeof rootRoute
     }
+    '/_auth/profile/$userId': {
+      id: '/_auth/profile/$userId'
+      path: '/profile/$userId'
+      fullPath: '/profile/$userId'
+      preLoaderRoute: typeof AuthProfileUserIdImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthScholarshipSearchRoute: typeof AuthScholarshipSearchRoute
+  AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthScholarshipSearchRoute: AuthScholarshipSearchRoute,
+  AuthProfileUserIdRoute: AuthProfileUserIdRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/term-of-service': typeof TermOfServiceRoute
+  '/scholarship-search': typeof AuthScholarshipSearchRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/profile/$userId': typeof AuthProfileUserIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/term-of-service': typeof TermOfServiceRoute
+  '/scholarship-search': typeof AuthScholarshipSearchRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/profile/$userId': typeof AuthProfileUserIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/term-of-service': typeof TermOfServiceRoute
+  '/_auth/scholarship-search': typeof AuthScholarshipSearchRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | ''
     | '/privacy-policy'
     | '/term-of-service'
+    | '/scholarship-search'
     | '/auth/login'
     | '/auth/register'
+    | '/profile/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | ''
     | '/privacy-policy'
     | '/term-of-service'
+    | '/scholarship-search'
     | '/auth/login'
     | '/auth/register'
+    | '/profile/$userId'
   id:
     | '__root__'
     | '/'
+    | '/_auth'
     | '/privacy-policy'
     | '/term-of-service'
+    | '/_auth/scholarship-search'
     | '/auth/login'
     | '/auth/register'
+    | '/_auth/profile/$userId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermOfServiceRoute: typeof TermOfServiceRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -153,6 +225,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermOfServiceRoute: TermOfServiceRoute,
   AuthLoginRoute: AuthLoginRoute,
@@ -170,6 +243,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/_auth",
         "/privacy-policy",
         "/term-of-service",
         "/auth/login",
@@ -179,17 +253,32 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "index.tsx"
     },
+    "/_auth": {
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/scholarship-search",
+        "/_auth/profile/$userId"
+      ]
+    },
     "/privacy-policy": {
       "filePath": "privacy-policy.tsx"
     },
     "/term-of-service": {
       "filePath": "term-of-service.tsx"
     },
+    "/_auth/scholarship-search": {
+      "filePath": "_auth.scholarship-search.tsx",
+      "parent": "/_auth"
+    },
     "/auth/login": {
       "filePath": "auth/login.tsx"
     },
     "/auth/register": {
       "filePath": "auth/register.tsx"
+    },
+    "/_auth/profile/$userId": {
+      "filePath": "_auth.profile/$userId.tsx",
+      "parent": "/_auth"
     }
   }
 }

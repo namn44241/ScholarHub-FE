@@ -1,10 +1,15 @@
+
 import SiteFooter from '@/components/layout/site-footer'
 import SiteHeader from '@/components/layout/site-header'
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import type { IAuthContextType } from '@/types/auth-context'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
+interface MyRouterContext {
+  auth: IAuthContextType
+}
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
       <SiteHeader />

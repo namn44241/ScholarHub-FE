@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth-context";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
@@ -33,13 +33,12 @@ export const useLoginForm = () => {
     const onLogin = async (data: LoginFormValues) => {
         try {
             await login(data.email, data.password);
-            console.log("Will navigate to profile");
             const response = await getCurrentUser();
             if (response) {
                 navigate({
                     to: "/profile/$userId",
-                    //@ts-ignore
-                    params: { userId: response.payload.user.id || "" },
+                    
+                    params: { userId: response.payload.user?.id || "" },
                 })
             } else {
                 form.setError("email", { message: response });
