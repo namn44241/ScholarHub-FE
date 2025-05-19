@@ -1,20 +1,25 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { forwardRef, useRef, useState } from "react"
-import { motion, type Variant, type Variants, cubicBezier } from "framer-motion"
+import {
+  cubicBezier,
+  motion,
+  type Variant,
+  type Variants,
+} from "framer-motion";
+import type React from "react";
+import { forwardRef, useRef } from "react";
 
 interface BlurTextProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  text?: string
-  delay?: number
-  animateBy?: "words" | "letters"
-  direction?: "top" | "bottom"
-  threshold?: number
-  rootMargin?: string
-  animationFrom?: Record<string, any>
-  animationTo?: Record<string, any>[]
-  easing?: string | [number, number, number, number]
-  onAnimationComplete?: () => void
+  text?: string;
+  delay?: number;
+  animateBy?: "words" | "letters";
+  direction?: "top" | "bottom";
+  threshold?: number;
+  rootMargin?: string;
+  animationFrom?: Record<string, any>;
+  animationTo?: Record<string, any>[];
+  easing?: string | [number, number, number, number];
+  onAnimationComplete?: () => void;
 }
 
 const BlurText = forwardRef<HTMLParagraphElement, BlurTextProps>(
@@ -30,17 +35,17 @@ const BlurText = forwardRef<HTMLParagraphElement, BlurTextProps>(
       animationFrom,
       animationTo,
       easing = [0.33, 0.66, 0.66, 1], // easeOutCubic in cubic-bezier form
-      onAnimationComplete,
     },
-    ref,
+    ref
   ) => {
-    const elements = animateBy === "words" ? text.split(" ") : text.split("")
-    const [animationCompleteCount, setAnimationCompleteCount] = useState(0)
-    const internalRef = useRef<HTMLParagraphElement>(null)
+    const elements = animateBy === "words" ? text.split(" ") : text.split("");
+    const internalRef = useRef<HTMLParagraphElement>(null);
 
     // Default animations based on direction
     const defaultFrom =
-      direction === "top" ? { filter: "blur(10px)", opacity: 0, y: -50 } : { filter: "blur(10px)", opacity: 0, y: 50 }
+      direction === "top"
+        ? { filter: "blur(10px)", opacity: 0, y: -50 }
+        : { filter: "blur(10px)", opacity: 0, y: 50 };
 
     const defaultTo = [
       {
@@ -53,12 +58,12 @@ const BlurText = forwardRef<HTMLParagraphElement, BlurTextProps>(
         opacity: 1,
         y: 0,
       },
-    ]
+    ];
 
     // Create variants for the animation sequence
     const createVariants = (index: number): Variants => {
-      const from = animationFrom || defaultFrom
-      const to = animationTo || defaultTo
+      const from = animationFrom || defaultFrom;
+      const to = animationTo || defaultTo;
 
       const variants: Record<string, Variant> = {
         hidden: from,
@@ -67,10 +72,13 @@ const BlurText = forwardRef<HTMLParagraphElement, BlurTextProps>(
           transition: {
             delay: index * (delay / 1000), // Convert to seconds
             duration: 0.5,
-            ease: typeof easing === "string" ? easing : cubicBezier(...(easing as [number, number, number, number])),
+            ease:
+              typeof easing === "string"
+                ? easing
+                : cubicBezier(...(easing as [number, number, number, number])),
           },
         },
-      }
+      };
 
       // Add intermediate steps if they exist
       if (to.length > 1) {
@@ -80,24 +88,21 @@ const BlurText = forwardRef<HTMLParagraphElement, BlurTextProps>(
             transition: {
               delay: index * (delay / 1000), // Convert to seconds
               duration: 0.3,
-              ease: typeof easing === "string" ? easing : cubicBezier(...(easing as [number, number, number, number])),
+              ease:
+                typeof easing === "string"
+                  ? easing
+                  : cubicBezier(
+                      ...(easing as [number, number, number, number])
+                    ),
             },
-          }
+          };
         }
       }
 
-      return variants
-    }
+      return variants;
+    };
 
-    const handleAnimationComplete = () => {
-      setAnimationCompleteCount((prev) => {
-        const newCount = prev + 1
-        if (newCount === elements.length && onAnimationComplete) {
-          onAnimationComplete()
-        }
-        return newCount
-      })
-    }
+    const handleAnimationComplete = () => {};
 
     return (
       <motion.p
@@ -110,8 +115,8 @@ const BlurText = forwardRef<HTMLParagraphElement, BlurTextProps>(
         }}
       >
         {elements.map((element, index) => {
-          const variants = createVariants(index)
-          const to = animationTo || defaultTo
+          const variants = createVariants(index);
+          const to = animationTo || defaultTo;
 
           return (
             <motion.span
@@ -126,13 +131,13 @@ const BlurText = forwardRef<HTMLParagraphElement, BlurTextProps>(
               {element === " " ? "\u00A0" : element}
               {animateBy === "words" && index < elements.length - 1 && "\u00A0"}
             </motion.span>
-          )
+          );
         })}
       </motion.p>
-    )
-  },
-)
+    );
+  }
+);
 
-BlurText.displayName = "BlurText"
+BlurText.displayName = "BlurText";
 
-export default BlurText
+export default BlurText;

@@ -83,9 +83,7 @@ export const customFetch = async <T = any>(
 
         finalOptions.headers = headers;
         response = await fetch(fullUrl, finalOptions);
-      } else {
-        throw new Error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
-      }
+      } 
     }
 
     // Kiểm tra response có phải JSON không

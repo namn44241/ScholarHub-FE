@@ -45,7 +45,7 @@ const UserMenu = ({ user, logout, variant = 'default' }: IUserProfileMenuProps) 
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 z-[100]" align="end" forceMount>
+            <DropdownMenuContent className="z-[100] w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                         <p className="font-medium text-sm line-clamp-1 leading-none">{user.email}</p>
@@ -57,7 +57,7 @@ const UserMenu = ({ user, logout, variant = 'default' }: IUserProfileMenuProps) 
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem
-                    // onClick={() => navigate({ to: '/profile/$userId', params: { userId: user.id } })}
+                    onClick={() => navigate({ to: '/profile/$userId', params: { userId: user.id } })}
                     >
                         <User className="mr-2 size-4" />
                         <span>My Profile</span>

@@ -34,12 +34,12 @@ export const useLoginForm = () => {
     const onLogin = async (data: LoginFormValues) => {
         try {
             await login(data.email, data.password);
-            const response = await getCurrentUser() as IUser;
+            const response = await getCurrentUser();
             if (response) {
                 navigate({
                     to: "/profile/$userId",
                     
-                    params: { userId: response.id || "" },
+                    params: { userId: response.data.id || "" },
                 })
             } else {
                 form.setError("email", { message: response });
