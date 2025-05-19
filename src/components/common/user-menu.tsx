@@ -25,6 +25,7 @@ const UserMenu = ({ user, logout, variant = 'default' }: IUserProfileMenuProps) 
         logout()
         navigate({ to: '/auth/login' })
     }
+    
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
