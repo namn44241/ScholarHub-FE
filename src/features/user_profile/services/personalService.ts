@@ -23,7 +23,7 @@ export const personalService = {
     );
     return response as IPersonalResponse;
   },
-  
+
   putPersonal: async (payload: IPersonalDTO): Promise<IPersonalResponse> => {
     const response = await apiClient.put(
       USER_PROFILE_ENDPOINTS.PERSONAL,

@@ -13,17 +13,7 @@ import { Save } from "lucide-react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { EDUCATION_TYPE } from "../utils/constants"
-
-export interface IEducation {
-  id: string;
-  type: EDUCATION_TYPE;
-  current_study_year?: number;
-  graduation_year?: number;
-  institution?: string;
-  major?: string;
-  degree_type?: string;
-  gpa?: number;
-}
+import type { IEducation } from "../utils/types"
 
 export const educationFormSchema = z.object({
     type: z.nativeEnum(EDUCATION_TYPE),
