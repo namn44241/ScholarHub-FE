@@ -10,18 +10,18 @@ const MainNav = () => {
 
 
     return (
-        <div className="mr-4 hidden md:flex">
-            <Link to="/" className="mr-4 flex items-center gap-2 lg:mr-6">
+        <div className="hidden md:flex mr-4">
+            <Link to="/" className="flex items-center gap-2 mr-4 lg:mr-6">
                 <ScholarHubLogo fontSize="text-xl"/>
             </Link>
-            <nav className="flex items-center gap-4 text-sm xl:gap-6">
+            <nav className="flex items-center gap-4 xl:gap-6 text-sm">
                 {
                     DOCS_CONFIG.mainNav.map((item) => (
                         <Link
                             key={item.href}
                             to={item.href}
                             className={cn(
-                                "transition-colors hover:text-foreground/80",
+                                "transition-colors hover:text-foreground/80 font-medium",
                                 pathName === item.href
                                     ? "text-foreground"
                                     : "text-foreground/80"

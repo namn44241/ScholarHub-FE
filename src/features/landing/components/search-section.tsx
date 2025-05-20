@@ -1,5 +1,3 @@
-"use client"
-
 import AnimatedContent from "@/components/decoration/animate-content"
 import FadeContent from "@/components/decoration/fade-content"
 import { Button } from "@/components/ui/button"
@@ -15,8 +13,8 @@ export const SearchSection = () => {
     const navigate = useNavigate()
 
     return (
-        <div id="features" className="w-full bg-muted">
-            <div className="container-wrapper flex flex-col items-center gap-4 sm:gap-6 py-8 sm:py-12 md:py-16">
+        <div id="features" className="bg-muted w-full">
+            <div className="flex flex-col items-center gap-4 sm:gap-6 py-8 sm:py-12 md:py-16 container-wrapper">
                 <AnimatedContent
                     distance={50}
                     delay={0.15}
@@ -28,10 +26,10 @@ export const SearchSection = () => {
                     threshold={0.2}
                 >
                     <div className="container">
-                        <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-center mb-2 sm:mb-4">
+                        <p className="mb-2 sm:mb-4 font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center">
                             A brand-new scholarship searching experience
                         </p>
-                        <p className="text-sm sm:text-base md:text-lg font-bricolage text-center text-muted-foreground max-w-3xl mx-auto">
+                        <p className="mx-auto max-w-3xl font-bricolage text-muted-foreground text-sm sm:text-base md:text-lg text-center">
                             Our smart, adaptive searching algorithm breaks down language barriers, helping you find scholarship
                             opportunities that truly fit your unique profile.
                         </p>
@@ -45,10 +43,10 @@ export const SearchSection = () => {
                     initialOpacity={0}
                     className="mt-4 sm:mt-6 md:mt-8 container"
                 >
-                    <div className="bg-background rounded-lg shadow-md sm:shadow-lg overflow-hidden">
-                        <div className="flex flex-col md:grid md:grid-cols-2 md:gap-0">
+                    <div className="bg-background shadow-md sm:shadow-lg rounded-lg overflow-hidden">
+                        <div className="flex flex-col md:gap-0 md:grid md:grid-cols-2">
                             {/* Mobile step selector */}
-                            <div className="md:hidden flex overflow-x-auto p-4 gap-2 border-b scrollbar-hide">
+                            <div className="md:hidden flex gap-2 p-4 border-b overflow-x-auto scrollbar-hide">
                                 {SEARCHING_STEP.map((step) => (
                                     <button
                                         key={`mobile-${step.id}`}
@@ -79,19 +77,19 @@ export const SearchSection = () => {
                                         <LazyLoadImage
                                             src={step.image.light || "/placeholder.svg"}
                                             alt={`Illustration for ${step.title}`}
-                                            className="w-full h-full object-contain dark:hidden"
+                                            className="dark:hidden w-full h-full object-contain"
                                         />
                                         <LazyLoadImage
                                             src={step.image.dark || "/placeholder.svg"}
                                             alt={`Illustration for ${step.title}`}
-                                            className="w-full h-full object-contain hidden dark:block"
+                                            className="hidden dark:block w-full h-full object-contain"
                                         />
                                     </div>
                                 ))}
                             </div>
 
                             {/* Steps content */}
-                            <div className="p-4 sm:p-6 md:p-8 flex flex-col justify-center gap-2">
+                            <div className="flex flex-col justify-center gap-2 p-4 sm:p-6 md:p-8">
                                 {SEARCHING_STEP.map((step) => (
                                     <div
                                         key={step.id}
@@ -105,20 +103,20 @@ export const SearchSection = () => {
                                         )}
                                     >
                                         <div className="flex items-center gap-2">
-                                            <div className="flex items-center justify-center size-6 sm:size-8 rounded-full bg-primary/10 text-primary">
+                                            <div className="flex justify-center items-center bg-primary/10 rounded-full size-6 sm:size-8 text-primary">
                                                 <step.icon className="size-3 sm:size-4" />
                                             </div>
-                                            <span className="text-sm sm:text-base md:text-lg font-medium text-primary">Step {step.id}</span>
+                                            <span className="font-medium text-primary text-sm sm:text-base md:text-lg">Step {step.id}</span>
                                         </div>
 
-                                        <p className="text-lg sm:text-xl md:text-2xl font-semibold">{step.title}</p>
-                                        <p className="text-sm sm:text-base text-muted-foreground">{step.description}</p>
+                                        <p className="font-semibold text-lg sm:text-xl md:text-2xl">{step.title}</p>
+                                        <p className="text-muted-foreground text-sm sm:text-base">{step.description}</p>
                                     </div>
                                 ))}
                             </div>
 
                             {/* Image section for desktop  */}
-                            <div className="hidden md:block relative aspect-[16/9] md:aspect-auto md:min-h-[400px] lg:min-h-[450px] overflow-hidden">
+                            <div className="hidden md:block relative md:min-h-[400px] lg:min-h-[450px] aspect-[16/9] md:aspect-auto overflow-hidden">
                                 {SEARCHING_STEP.map((step) => (
                                     <div
                                         key={`desktop-img-${step.id}`}
@@ -130,12 +128,12 @@ export const SearchSection = () => {
                                         <LazyLoadImage
                                             src={step.image.light || "/placeholder.svg"}
                                             alt={`Illustration for ${step.title}`}
-                                            className="w-full h-full object-contain dark:hidden rounded-lg"
+                                            className="dark:hidden rounded-lg w-full h-full object-contain"
                                         />
                                         <LazyLoadImage
                                             src={step.image.dark || "/placeholder.svg"}
                                             alt={`Illustration for ${step.title}`}
-                                            className="w-full h-full object-contain hidden dark:block"
+                                            className="hidden dark:block w-full h-full object-contain"
                                         />
                                     </div>
                                 ))}
@@ -155,7 +153,7 @@ export const SearchSection = () => {
                     threshold={0.2}
                 >
                     <Button
-                        className="text-base sm:text-lg shadow-md sm:shadow-lg px-4 sm:px-6 py-2 sm:py-2.5 mt-4 sm:mt-6"
+                        className="shadow-md sm:shadow-lg mt-4 sm:mt-6 px-4 sm:px-6 py-2 sm:py-2.5 text-base sm:text-lg"
                         onClick={() => navigate({ to: "/scholarship-search" })}
                     >
                         Try it yourself!

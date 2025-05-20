@@ -71,7 +71,7 @@ export const authService = {
     }
 
     try {
-      const response = await apiClient.get<IUserResponse>(REGISTER_API);
+      const response = await apiClient.get<IUserResponse>(GET_USER_API);
 
       return {
         success: true,

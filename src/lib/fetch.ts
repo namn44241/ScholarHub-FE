@@ -83,7 +83,7 @@ export const customFetch = async <T = any>(
 
         finalOptions.headers = headers;
         response = await fetch(fullUrl, finalOptions);
-      } 
+      }
     }
 
     // Kiểm tra response có phải JSON không
@@ -124,6 +124,10 @@ export const apiClient = {
       body: data ? JSON.stringify(data) : undefined,
     }),
 
-  delete: <T = any>(url: string, options?: IFetchOptions) =>
-    customFetch<T>(url, { ...options, method: "DELETE" }),
+  delete: <T = any>(url: string, data?: any, options?: IFetchOptions) =>
+    customFetch<T>(url, {
+      ...options,
+      method: "DELETE",
+      body: data ? JSON.stringify(data) : undefined,
+    }),
 };

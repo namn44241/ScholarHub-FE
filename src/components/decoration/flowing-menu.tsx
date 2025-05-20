@@ -1,5 +1,3 @@
-"use client"
-
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { motion, AnimatePresence, type Variants } from "framer-motion"
 import React, { useEffect, useState } from "react"
@@ -24,7 +22,7 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({ items = [] }) => {
 
   return (
     <div className="w-full h-full overflow-hidden">
-      <nav className="flex flex-col h-full m-0 p-0">
+      <nav className="flex flex-col m-0 p-0 h-full">
         {items.map((item, idx) => (
           <MenuItem key={idx} {...item} style={{ height: itemHeight }} />
         ))}
@@ -92,11 +90,11 @@ const MenuItem: React.FC<MenuItemProps & { style?: React.CSSProperties }> = ({ t
   const repeatedMarqueeContent = React.useMemo(() => {
     return Array.from({ length: 10 }).map((_, idx) => (
       <React.Fragment key={idx}>
-        <span className="text-[#060606] dark:text-white uppercase font-normal text-[4vh] leading-[1.2] p-[1vh_1vw_0]">
+        <span className="p-[1vh_1vw_0] font-normal text-[#060606] text-[4vh] dark:text-white uppercase leading-[1.2]">
           {text}
         </span>
         <div
-          className="w-[200px] h-[7vh] my-[2em] mx-[2vw] p-[1em_0] rounded-[50px] bg-cover bg-center"
+          className="bg-cover bg-center mx-[2vw] my-[2em] p-[1em_0] rounded-[50px] w-[200px] h-[7vh]"
           style={{ backgroundImage: `url(${image})` }}
         />
       </React.Fragment>
@@ -104,9 +102,9 @@ const MenuItem: React.FC<MenuItemProps & { style?: React.CSSProperties }> = ({ t
   }, [text, image])
 
   return (
-    <div className="flex-1 relative overflow-hidden text-center shadow-[0_-1px_0_0_#fff]" ref={itemRef} style={style}>
+    <div className="relative flex-1 shadow-[0_-1px_0_0_#fff] overflow-hidden text-center" ref={itemRef} style={style}>
       <a
-        className="flex items-center justify-center h-fit sm:h-full relative cursor-pointer uppercase no-underline font-semibold text-muted-foreground dark:text-white text-2xl sm:text-[4vh] hover:text-[#060606] focus:text-white focus-visible:text-[#060606]"
+        className="relative flex justify-center items-center h-fit sm:h-full font-semibold text-muted-foreground sm:text-[4vh] hover:text-[#060606] focus-visible:text-[#060606] focus:text-white dark:text-white text-2xl no-underline uppercase cursor-pointer"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -116,7 +114,7 @@ const MenuItem: React.FC<MenuItemProps & { style?: React.CSSProperties }> = ({ t
         <AnimatePresence custom={direction}>
           {isHovered && (
             <motion.div
-              className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-muted"
+              className="top-0 left-0 absolute bg-muted w-full h-full overflow-hidden pointer-events-none"
               variants={marqueeVariants}
               initial="hidden"
               animate="visible"
@@ -124,14 +122,14 @@ const MenuItem: React.FC<MenuItemProps & { style?: React.CSSProperties }> = ({ t
               custom={direction}
             >
               <motion.div
-                className="h-full w-[200%] flex"
+                className="flex w-[200%] h-full"
                 variants={marqueeInnerVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
                 custom={direction}
               >
-                <div className="flex items-center relative h-full w-[200%] will-change-transform animate-marquee">
+                <div className="relative flex items-center w-[200%] h-full animate-marquee will-change-transform">
                   {repeatedMarqueeContent}
                 </div>
               </motion.div>

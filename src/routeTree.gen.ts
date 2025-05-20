@@ -18,7 +18,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as AuthRegisterImport } from './routes/auth/register'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthScholarshipSearchImport } from './routes/_auth.scholarship-search'
-import { Route as AuthProfileUserIdImport } from './routes/_auth.profile/$userId'
+import { Route as AuthProfileUserIdImport } from './routes/_auth.profile.$userId'
 
 // Create/Update Routes
 
@@ -277,7 +277,7 @@ export const routeTree = rootRoute
       "filePath": "auth/register.tsx"
     },
     "/_auth/profile/$userId": {
-      "filePath": "_auth.profile/$userId.tsx",
+      "filePath": "_auth.profile.$userId.tsx",
       "parent": "/_auth"
     }
   }
