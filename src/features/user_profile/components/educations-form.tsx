@@ -134,7 +134,7 @@ const EducationForm = ({ initialValues, onSubmit, onCancel }: EducationFormProps
                         name="current_study_year"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Current Study Year (if applicable)</FormLabel>
+                                <FormLabel>Current Study Year</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="number"
@@ -156,7 +156,7 @@ const EducationForm = ({ initialValues, onSubmit, onCancel }: EducationFormProps
                         name="graduation_year"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Graduation Year (if applicable)</FormLabel>
+                                <FormLabel>Graduation Year</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="number"
@@ -179,7 +179,7 @@ const EducationForm = ({ initialValues, onSubmit, onCancel }: EducationFormProps
                     name="gpa"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>GPA (Optional)</FormLabel>
+                            <FormLabel>GPA</FormLabel>
                             <FormControl>
                                 <Input
                                     type="number"
