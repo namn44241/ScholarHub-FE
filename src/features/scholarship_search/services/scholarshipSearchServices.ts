@@ -1,0 +1,56 @@
+import { SCHOLARSHIP_MANAGE_ENDPOINTS } from "@/features/scholarship_manage";
+import { apiClient } from "@/lib/fetch";
+import type { IScholarship } from "@/types/scholarship";
+import { SCHOLARSHIP_RECOMMEND_ENDPOINTS } from "./endpoints";
+
+export interface ISearchScholarshipResponse {
+  success: boolean;
+  message: string;
+  payload: {
+    scholarships: IScholarship[];
+  };
+}
+
+export interface IScholarshipRecommendResponse {
+  success: boolean;
+  message: string;
+  payload: {
+    scholarships: IScholarship[];
+  };
+}
+
+export interface IPostScholarshipDTO extends Omit<IScholarship, "id"> {}
+
+export interface IGetScholarshipRecommendParams {
+  suggest: boolean;
+  limit: number;
+  offset: number;
+}
+
+export const scholarshipSearchServices = {
+  searchScholarships: async (
+    query?: string
+  ): Promise<ISearchScholarshipResponse> => {
+    const response = await apiClient.get(
+      `${SCHOLARSHIP_MANAGE_ENDPOINTS.SEARCH_SCHOLARSHIPS}?query=${query}`
+    );
+    return response as ISearchScholarshipResponse;
+  },
+
+  getScholarshipRecommend: async (
+    params: IGetScholarshipRecommendParams
+  ): Promise<IScholarshipRecommendResponse> => {
+    const response = await apiClient.get(
+      `${SCHOLARSHIP_RECOMMEND_ENDPOINTS.DEFAULT}?suggest=${params.suggest}&limit=${params.limit}&offset=${params.offset}`
+    );
+    return response as IScholarshipRecommendResponse;
+  },
+
+  forceRecreateScholarshipRecommend:
+    async (): Promise<IScholarshipRecommendResponse> => {
+      const response = await apiClient.put(
+        SCHOLARSHIP_RECOMMEND_ENDPOINTS.FORCE_RECREATE
+      );
+      return response as IScholarshipRecommendResponse;
+    },
+};

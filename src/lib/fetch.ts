@@ -101,7 +101,10 @@ export const customFetch = async <T = any>(
 
 export const apiClient = {
   get: <T = any>(url: string, options?: IFetchOptions) =>
-    customFetch<T>(url, { ...options, method: "GET" }),
+    customFetch<T>(url, {
+      ...options,
+      method: "GET",
+    }),
 
   post: <T = any>(url: string, data?: any, options?: IFetchOptions) =>
     customFetch<T>(url, {
