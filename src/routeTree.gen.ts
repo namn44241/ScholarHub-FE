@@ -18,10 +18,13 @@ import { Route as IndexImport } from './routes/index'
 import { Route as AuthRegisterImport } from './routes/auth/register'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthScholarshipSearchImport } from './routes/_auth.scholarship-search'
+import { Route as AuthCommunityImport } from './routes/_auth.community'
 import { Route as AuthScholarshipManagementIndexImport } from './routes/_auth.scholarship-management/index'
+import { Route as AuthChatbotIndexImport } from './routes/_auth.chatbot/index'
 import { Route as AuthScholarshipMatchingScholarshipIdImport } from './routes/_auth.scholarship-matching.$scholarshipId'
 import { Route as AuthScholarshipManagementScholarshipIdImport } from './routes/_auth.scholarship-management/$scholarshipId'
 import { Route as AuthProfileUserIdImport } from './routes/_auth.profile.$userId'
+import { Route as AuthChatbotThreadIdImport } from './routes/_auth.chatbot/$threadId'
 
 // Create/Update Routes
 
@@ -66,12 +69,24 @@ const AuthScholarshipSearchRoute = AuthScholarshipSearchImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthCommunityRoute = AuthCommunityImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 const AuthScholarshipManagementIndexRoute =
   AuthScholarshipManagementIndexImport.update({
     id: '/scholarship-management/',
     path: '/scholarship-management/',
     getParentRoute: () => AuthRoute,
   } as any)
+
+const AuthChatbotIndexRoute = AuthChatbotIndexImport.update({
+  id: '/chatbot/',
+  path: '/chatbot/',
+  getParentRoute: () => AuthRoute,
+} as any)
 
 const AuthScholarshipMatchingScholarshipIdRoute =
   AuthScholarshipMatchingScholarshipIdImport.update({
@@ -90,6 +105,12 @@ const AuthScholarshipManagementScholarshipIdRoute =
 const AuthProfileUserIdRoute = AuthProfileUserIdImport.update({
   id: '/profile/$userId',
   path: '/profile/$userId',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthChatbotThreadIdRoute = AuthChatbotThreadIdImport.update({
+  id: '/chatbot/$threadId',
+  path: '/chatbot/$threadId',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -125,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermOfServiceImport
       parentRoute: typeof rootRoute
     }
+    '/_auth/community': {
+      id: '/_auth/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AuthCommunityImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/scholarship-search': {
       id: '/_auth/scholarship-search'
       path: '/scholarship-search'
@@ -145,6 +173,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/register'
       preLoaderRoute: typeof AuthRegisterImport
       parentRoute: typeof rootRoute
+    }
+    '/_auth/chatbot/$threadId': {
+      id: '/_auth/chatbot/$threadId'
+      path: '/chatbot/$threadId'
+      fullPath: '/chatbot/$threadId'
+      preLoaderRoute: typeof AuthChatbotThreadIdImport
+      parentRoute: typeof AuthImport
     }
     '/_auth/profile/$userId': {
       id: '/_auth/profile/$userId'
@@ -167,6 +202,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthScholarshipMatchingScholarshipIdImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/chatbot/': {
+      id: '/_auth/chatbot/'
+      path: '/chatbot'
+      fullPath: '/chatbot'
+      preLoaderRoute: typeof AuthChatbotIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/scholarship-management/': {
       id: '/_auth/scholarship-management/'
       path: '/scholarship-management'
@@ -180,20 +222,26 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthRouteChildren {
+  AuthCommunityRoute: typeof AuthCommunityRoute
   AuthScholarshipSearchRoute: typeof AuthScholarshipSearchRoute
+  AuthChatbotThreadIdRoute: typeof AuthChatbotThreadIdRoute
   AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
   AuthScholarshipManagementScholarshipIdRoute: typeof AuthScholarshipManagementScholarshipIdRoute
   AuthScholarshipMatchingScholarshipIdRoute: typeof AuthScholarshipMatchingScholarshipIdRoute
+  AuthChatbotIndexRoute: typeof AuthChatbotIndexRoute
   AuthScholarshipManagementIndexRoute: typeof AuthScholarshipManagementIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthCommunityRoute: AuthCommunityRoute,
   AuthScholarshipSearchRoute: AuthScholarshipSearchRoute,
+  AuthChatbotThreadIdRoute: AuthChatbotThreadIdRoute,
   AuthProfileUserIdRoute: AuthProfileUserIdRoute,
   AuthScholarshipManagementScholarshipIdRoute:
     AuthScholarshipManagementScholarshipIdRoute,
   AuthScholarshipMatchingScholarshipIdRoute:
     AuthScholarshipMatchingScholarshipIdRoute,
+  AuthChatbotIndexRoute: AuthChatbotIndexRoute,
   AuthScholarshipManagementIndexRoute: AuthScholarshipManagementIndexRoute,
 }
 
@@ -204,12 +252,15 @@ export interface FileRoutesByFullPath {
   '': typeof AuthRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/term-of-service': typeof TermOfServiceRoute
+  '/community': typeof AuthCommunityRoute
   '/scholarship-search': typeof AuthScholarshipSearchRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/chatbot/$threadId': typeof AuthChatbotThreadIdRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/scholarship-management/$scholarshipId': typeof AuthScholarshipManagementScholarshipIdRoute
   '/scholarship-matching/$scholarshipId': typeof AuthScholarshipMatchingScholarshipIdRoute
+  '/chatbot': typeof AuthChatbotIndexRoute
   '/scholarship-management': typeof AuthScholarshipManagementIndexRoute
 }
 
@@ -218,12 +269,15 @@ export interface FileRoutesByTo {
   '': typeof AuthRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/term-of-service': typeof TermOfServiceRoute
+  '/community': typeof AuthCommunityRoute
   '/scholarship-search': typeof AuthScholarshipSearchRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/chatbot/$threadId': typeof AuthChatbotThreadIdRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/scholarship-management/$scholarshipId': typeof AuthScholarshipManagementScholarshipIdRoute
   '/scholarship-matching/$scholarshipId': typeof AuthScholarshipMatchingScholarshipIdRoute
+  '/chatbot': typeof AuthChatbotIndexRoute
   '/scholarship-management': typeof AuthScholarshipManagementIndexRoute
 }
 
@@ -233,12 +287,15 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/term-of-service': typeof TermOfServiceRoute
+  '/_auth/community': typeof AuthCommunityRoute
   '/_auth/scholarship-search': typeof AuthScholarshipSearchRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/_auth/chatbot/$threadId': typeof AuthChatbotThreadIdRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
   '/_auth/scholarship-management/$scholarshipId': typeof AuthScholarshipManagementScholarshipIdRoute
   '/_auth/scholarship-matching/$scholarshipId': typeof AuthScholarshipMatchingScholarshipIdRoute
+  '/_auth/chatbot/': typeof AuthChatbotIndexRoute
   '/_auth/scholarship-management/': typeof AuthScholarshipManagementIndexRoute
 }
 
@@ -249,12 +306,15 @@ export interface FileRouteTypes {
     | ''
     | '/privacy-policy'
     | '/term-of-service'
+    | '/community'
     | '/scholarship-search'
     | '/auth/login'
     | '/auth/register'
+    | '/chatbot/$threadId'
     | '/profile/$userId'
     | '/scholarship-management/$scholarshipId'
     | '/scholarship-matching/$scholarshipId'
+    | '/chatbot'
     | '/scholarship-management'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -262,12 +322,15 @@ export interface FileRouteTypes {
     | ''
     | '/privacy-policy'
     | '/term-of-service'
+    | '/community'
     | '/scholarship-search'
     | '/auth/login'
     | '/auth/register'
+    | '/chatbot/$threadId'
     | '/profile/$userId'
     | '/scholarship-management/$scholarshipId'
     | '/scholarship-matching/$scholarshipId'
+    | '/chatbot'
     | '/scholarship-management'
   id:
     | '__root__'
@@ -275,12 +338,15 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/privacy-policy'
     | '/term-of-service'
+    | '/_auth/community'
     | '/_auth/scholarship-search'
     | '/auth/login'
     | '/auth/register'
+    | '/_auth/chatbot/$threadId'
     | '/_auth/profile/$userId'
     | '/_auth/scholarship-management/$scholarshipId'
     | '/_auth/scholarship-matching/$scholarshipId'
+    | '/_auth/chatbot/'
     | '/_auth/scholarship-management/'
   fileRoutesById: FileRoutesById
 }
@@ -327,10 +393,13 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
+        "/_auth/community",
         "/_auth/scholarship-search",
+        "/_auth/chatbot/$threadId",
         "/_auth/profile/$userId",
         "/_auth/scholarship-management/$scholarshipId",
         "/_auth/scholarship-matching/$scholarshipId",
+        "/_auth/chatbot/",
         "/_auth/scholarship-management/"
       ]
     },
@@ -339,6 +408,10 @@ export const routeTree = rootRoute
     },
     "/term-of-service": {
       "filePath": "term-of-service.tsx"
+    },
+    "/_auth/community": {
+      "filePath": "_auth.community.tsx",
+      "parent": "/_auth"
     },
     "/_auth/scholarship-search": {
       "filePath": "_auth.scholarship-search.tsx",
@@ -350,6 +423,10 @@ export const routeTree = rootRoute
     "/auth/register": {
       "filePath": "auth/register.tsx"
     },
+    "/_auth/chatbot/$threadId": {
+      "filePath": "_auth.chatbot/$threadId.tsx",
+      "parent": "/_auth"
+    },
     "/_auth/profile/$userId": {
       "filePath": "_auth.profile.$userId.tsx",
       "parent": "/_auth"
@@ -360,6 +437,10 @@ export const routeTree = rootRoute
     },
     "/_auth/scholarship-matching/$scholarshipId": {
       "filePath": "_auth.scholarship-matching.$scholarshipId.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/chatbot/": {
+      "filePath": "_auth.chatbot/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/scholarship-management/": {

@@ -32,7 +32,7 @@ export const scholarshipService = {
     const response = await apiClient.get(
       `${SCHOLARSHIP_MANAGE_ENDPOINTS.GET_SCHOLARSHIPS}?limit=${params.limit}&offset=${params.offset}`
     );
-    return response.data as IGetScholarshipsResponse;
+    return response as IGetScholarshipsResponse;
   },
 
   postScolarship: async (
@@ -42,6 +42,6 @@ export const scholarshipService = {
       SCHOLARSHIP_MANAGE_ENDPOINTS.POST_SCHOLARSHIP,
       payload
     );
-    return response.data as IPostScholarshipResponse;
+    return response as IPostScholarshipResponse;
   },
 };
