@@ -63,3 +63,18 @@ export const useForceRecreateScholarshipRecommend = () => {
     },
   });
 };
+
+export const useScholarshipDetail = (id: string) => {
+  return useQuery({
+    queryKey: scholarshipSearchKeys.detail(id),
+    queryFn: async () => {
+      const response = await scholarshipSearchServices.getScholarshipDetail({
+        id,
+      });
+      return response.payload.scholarships;
+    },
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
+    enabled: !!id,
+  });
+};

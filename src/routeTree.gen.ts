@@ -18,7 +18,9 @@ import { Route as IndexImport } from './routes/index'
 import { Route as AuthRegisterImport } from './routes/auth/register'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthScholarshipSearchImport } from './routes/_auth.scholarship-search'
+import { Route as AuthScholarshipManagementIndexImport } from './routes/_auth.scholarship-management/index'
 import { Route as AuthScholarshipMatchingScholarshipIdImport } from './routes/_auth.scholarship-matching.$scholarshipId'
+import { Route as AuthScholarshipManagementScholarshipIdImport } from './routes/_auth.scholarship-management/$scholarshipId'
 import { Route as AuthProfileUserIdImport } from './routes/_auth.profile.$userId'
 
 // Create/Update Routes
@@ -64,10 +66,24 @@ const AuthScholarshipSearchRoute = AuthScholarshipSearchImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthScholarshipManagementIndexRoute =
+  AuthScholarshipManagementIndexImport.update({
+    id: '/scholarship-management/',
+    path: '/scholarship-management/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+
 const AuthScholarshipMatchingScholarshipIdRoute =
   AuthScholarshipMatchingScholarshipIdImport.update({
     id: '/scholarship-matching/$scholarshipId',
     path: '/scholarship-matching/$scholarshipId',
+    getParentRoute: () => AuthRoute,
+  } as any)
+
+const AuthScholarshipManagementScholarshipIdRoute =
+  AuthScholarshipManagementScholarshipIdImport.update({
+    id: '/scholarship-management/$scholarshipId',
+    path: '/scholarship-management/$scholarshipId',
     getParentRoute: () => AuthRoute,
   } as any)
 
@@ -137,11 +153,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthProfileUserIdImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/scholarship-management/$scholarshipId': {
+      id: '/_auth/scholarship-management/$scholarshipId'
+      path: '/scholarship-management/$scholarshipId'
+      fullPath: '/scholarship-management/$scholarshipId'
+      preLoaderRoute: typeof AuthScholarshipManagementScholarshipIdImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/scholarship-matching/$scholarshipId': {
       id: '/_auth/scholarship-matching/$scholarshipId'
       path: '/scholarship-matching/$scholarshipId'
       fullPath: '/scholarship-matching/$scholarshipId'
       preLoaderRoute: typeof AuthScholarshipMatchingScholarshipIdImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/scholarship-management/': {
+      id: '/_auth/scholarship-management/'
+      path: '/scholarship-management'
+      fullPath: '/scholarship-management'
+      preLoaderRoute: typeof AuthScholarshipManagementIndexImport
       parentRoute: typeof AuthImport
     }
   }
@@ -152,14 +182,19 @@ declare module '@tanstack/react-router' {
 interface AuthRouteChildren {
   AuthScholarshipSearchRoute: typeof AuthScholarshipSearchRoute
   AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
+  AuthScholarshipManagementScholarshipIdRoute: typeof AuthScholarshipManagementScholarshipIdRoute
   AuthScholarshipMatchingScholarshipIdRoute: typeof AuthScholarshipMatchingScholarshipIdRoute
+  AuthScholarshipManagementIndexRoute: typeof AuthScholarshipManagementIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthScholarshipSearchRoute: AuthScholarshipSearchRoute,
   AuthProfileUserIdRoute: AuthProfileUserIdRoute,
+  AuthScholarshipManagementScholarshipIdRoute:
+    AuthScholarshipManagementScholarshipIdRoute,
   AuthScholarshipMatchingScholarshipIdRoute:
     AuthScholarshipMatchingScholarshipIdRoute,
+  AuthScholarshipManagementIndexRoute: AuthScholarshipManagementIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -173,7 +208,9 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
+  '/scholarship-management/$scholarshipId': typeof AuthScholarshipManagementScholarshipIdRoute
   '/scholarship-matching/$scholarshipId': typeof AuthScholarshipMatchingScholarshipIdRoute
+  '/scholarship-management': typeof AuthScholarshipManagementIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -185,7 +222,9 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
+  '/scholarship-management/$scholarshipId': typeof AuthScholarshipManagementScholarshipIdRoute
   '/scholarship-matching/$scholarshipId': typeof AuthScholarshipMatchingScholarshipIdRoute
+  '/scholarship-management': typeof AuthScholarshipManagementIndexRoute
 }
 
 export interface FileRoutesById {
@@ -198,7 +237,9 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
+  '/_auth/scholarship-management/$scholarshipId': typeof AuthScholarshipManagementScholarshipIdRoute
   '/_auth/scholarship-matching/$scholarshipId': typeof AuthScholarshipMatchingScholarshipIdRoute
+  '/_auth/scholarship-management/': typeof AuthScholarshipManagementIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -212,7 +253,9 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/profile/$userId'
+    | '/scholarship-management/$scholarshipId'
     | '/scholarship-matching/$scholarshipId'
+    | '/scholarship-management'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -223,7 +266,9 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/profile/$userId'
+    | '/scholarship-management/$scholarshipId'
     | '/scholarship-matching/$scholarshipId'
+    | '/scholarship-management'
   id:
     | '__root__'
     | '/'
@@ -234,7 +279,9 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/_auth/profile/$userId'
+    | '/_auth/scholarship-management/$scholarshipId'
     | '/_auth/scholarship-matching/$scholarshipId'
+    | '/_auth/scholarship-management/'
   fileRoutesById: FileRoutesById
 }
 
@@ -282,7 +329,9 @@ export const routeTree = rootRoute
       "children": [
         "/_auth/scholarship-search",
         "/_auth/profile/$userId",
-        "/_auth/scholarship-matching/$scholarshipId"
+        "/_auth/scholarship-management/$scholarshipId",
+        "/_auth/scholarship-matching/$scholarshipId",
+        "/_auth/scholarship-management/"
       ]
     },
     "/privacy-policy": {
@@ -305,8 +354,16 @@ export const routeTree = rootRoute
       "filePath": "_auth.profile.$userId.tsx",
       "parent": "/_auth"
     },
+    "/_auth/scholarship-management/$scholarshipId": {
+      "filePath": "_auth.scholarship-management/$scholarshipId.tsx",
+      "parent": "/_auth"
+    },
     "/_auth/scholarship-matching/$scholarshipId": {
       "filePath": "_auth.scholarship-matching.$scholarshipId.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/scholarship-management/": {
+      "filePath": "_auth.scholarship-management/index.tsx",
       "parent": "/_auth"
     }
   }

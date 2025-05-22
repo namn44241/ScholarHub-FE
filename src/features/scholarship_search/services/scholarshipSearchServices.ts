@@ -1,4 +1,3 @@
-import { SCHOLARSHIP_MANAGE_ENDPOINTS } from "@/features/scholarship_manage";
 import { apiClient } from "@/lib/fetch";
 import type { IScholarship } from "@/types/scholarship";
 import { SCHOLARSHIP_RECOMMEND_ENDPOINTS } from "./endpoints";
@@ -19,7 +18,19 @@ export interface IScholarshipRecommendResponse {
   };
 }
 
+export interface IScholarshipDetailResponse {
+  success: boolean;
+  message?: string;
+  payload: {
+    scholarships: IScholarship;
+  };
+}
+
 export interface IPostScholarshipDTO extends Omit<IScholarship, "id"> {}
+
+export interface IScholarshipDetailDTO {
+  id: string;
+}
 
 export interface IGetScholarshipRecommendParams {
   suggest: boolean;
@@ -32,7 +43,7 @@ export const scholarshipSearchServices = {
     query?: string
   ): Promise<ISearchScholarshipResponse> => {
     const response = await apiClient.get(
-      `${SCHOLARSHIP_MANAGE_ENDPOINTS.SEARCH_SCHOLARSHIPS}?query=${query}`
+      `${SCHOLARSHIP_RECOMMEND_ENDPOINTS.SEARCH_SCHOLARSHIPS}?query=${query}`
     );
     return response as ISearchScholarshipResponse;
   },
@@ -53,4 +64,13 @@ export const scholarshipSearchServices = {
       );
       return response as IScholarshipRecommendResponse;
     },
+
+  getScholarshipDetail: async (
+    payload: IScholarshipDetailDTO
+  ): Promise<IScholarshipDetailResponse> => {
+    const response = await apiClient.get(
+      `${SCHOLARSHIP_RECOMMEND_ENDPOINTS.DEFAULT}?id=${payload.id}`
+    );
+    return response as IScholarshipDetailResponse;
+  },
 };
