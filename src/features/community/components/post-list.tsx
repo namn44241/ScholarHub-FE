@@ -5,7 +5,7 @@ import type { IPost, IPostListProps } from "../utils/types";
 
 const MemoizedPost = memo(Post);
 
-const PostList = ({ posts, onReaction, loadMorePosts }: IPostListProps) => {
+const PostList = ({ posts, onReaction, loadMorePosts, onHidePost }: IPostListProps) => {
   const [visiblePosts, setVisiblePosts] = useState<IPost[]>([]);
   const loaderRef = useRef<HTMLDivElement>(null);
   const postRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -80,12 +80,15 @@ const PostList = ({ posts, onReaction, loadMorePosts }: IPostListProps) => {
       {visiblePosts.map((post) => (
         <div
           key={post.id}
-          ref={(el) => setPostRef(el, post.id)}
-          className="opacity-0 transition-opacity duration-300 post-item"
+          ref={(el) => {
+            if (el) postRefs.current.set(post.id, el);
+          }}
+          className="post-container"
         >
           <MemoizedPost
             post={post}
             onReaction={handleReaction}
+            onHidePost={onHidePost}
           />
         </div>
       ))}

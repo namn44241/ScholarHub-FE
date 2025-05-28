@@ -69,5 +69,20 @@ export const communityApi = {
   async createRepost(postId: string) {
     const response = await apiClient.post(`/community/posts/${postId}/repost`)
     return response
+  },
+
+  async toggleSavePost(postId: string) {
+    const response = await apiClient.post(`/community/posts/${postId}/save`)
+    return response
+  },
+
+  async getSavedPosts(page: number = 1, limit: number = 20) {
+    const response = await apiClient.get(`/community/saved-posts?page=${page}&limit=${limit}`)
+    return response
+  },
+
+  async getSavedPostsCount() {
+    const response = await apiClient.get(`/community/saved-posts/count`)
+    return response
   }
 } 

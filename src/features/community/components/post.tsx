@@ -13,11 +13,13 @@ import { communityApi } from "../services/community-api"
 interface IPostProps {
     post: IPost
     onReaction: (postId: string) => void
+    onHidePost?: (postId: string) => void
 }
 
-const Post = ({ post, onReaction }: IPostProps) => {
+const Post = ({ post, onReaction, onHidePost }: IPostProps) => {
     const [showComments, setShowComments] = useState(false)
     const [isReposting, setIsReposting] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
 
     const handleRepost = async () => {
         try {
@@ -29,6 +31,25 @@ const Post = ({ post, onReaction }: IPostProps) => {
             console.error('Repost error:', error)
         } finally {
             setIsReposting(false)
+        }
+    }
+
+    const handleSavePost = async () => {
+        try {
+            setIsSaving(true)
+            await communityApi.toggleSavePost(post.id)
+            // Refresh hoặc update state
+            window.location.reload()
+        } catch (error) {
+            console.error('Save post error:', error)
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    const handleHidePost = () => {
+        if (onHidePost) {
+            onHidePost(post.id)
         }
     }
 
@@ -59,8 +80,12 @@ const Post = ({ post, onReaction }: IPostProps) => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Save post</DropdownMenuItem>
-                            <DropdownMenuItem>Hide post</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleSavePost} disabled={isSaving}>
+                                {post.userSaved ? "Unsave post" : "Save post"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleHidePost}>
+                                Hide post
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Report post</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

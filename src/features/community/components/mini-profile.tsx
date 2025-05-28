@@ -8,13 +8,61 @@ import type { IUser } from "@/types/user"
 import { useNavigate } from "@tanstack/react-router"
 import { ArrowUpRight, Bookmark, GraduationCap, Navigation, Users } from 'lucide-react'
 import { LazyLoadImage } from "react-lazy-load-image-component"
+import { useEffect, useState } from "react"
+import { communityApi } from "../services/community-api"
 
-const MiniProfile = ({ userData, profile }: { userData: IUser, profile: IUserProfile }) => {
+const MiniProfile = ({ 
+  userData, 
+  profile, 
+  onShowSavedPosts, 
+  onShowFeed,
+  currentView 
+}: { 
+  userData: IUser, 
+  profile: IUserProfile,
+  onShowSavedPosts: () => void,
+  onShowFeed: () => void,
+  currentView: 'feed' | 'saved'
+}) => {
   const navigate = useNavigate()
+  const [savedPostsCount, setSavedPostsCount] = useState(0)
+
+  // Load saved posts count
+  useEffect(() => {
+    const loadSavedPostsCount = async () => {
+      try {
+        const response = await communityApi.getSavedPostsCount()
+        if (response.success) {
+          setSavedPostsCount(response.payload.count)
+        }
+      } catch (error) {
+        console.error('Load saved posts count error:', error)
+      }
+    }
+    
+    loadSavedPostsCount()
+  }, [])
+
   const navigationItems = [
-    { icon: <Bookmark className="size-4" />, label: "Saved Posts", href: "/" },
-    { icon: <Users className="size-4" />, label: "Groups", href: "/" },
-    { icon: <GraduationCap className="size-4" />, label: "My Scholarships", href: "/" },
+    {
+      icon: <Bookmark className="size-4" />,
+      label: "Saved Posts",
+      onClick: onShowSavedPosts,
+      count: savedPostsCount,
+      active: currentView === 'saved'
+    },
+    { 
+      icon: <Users className="size-4" />, 
+      label: "Groups", 
+      onClick: () => {}, 
+      active: false 
+    },
+    { 
+      icon: <GraduationCap className="size-4" />, 
+      label: "My Scholarships", 
+      onClick: () => {},
+      active: false 
+    },
   ]
 
   return (
@@ -77,16 +125,23 @@ const MiniProfile = ({ userData, profile }: { userData: IUser, profile: IUserPro
         <CardContent>
           <nav className="space-y-0.5">
             {navigationItems.map((item, index) => (
-              <a
+              <button
                 key={index}
-                href={item.href}
-                className="group flex items-center gap-2.5 hover:bg-muted/80 px-2 py-1.5 rounded-md font-medium text-sm transition-all"
+                onClick={item.onClick}
+                className={`group flex items-center justify-between hover:bg-muted/80 px-2 py-1.5 rounded-md font-medium text-sm transition-all w-full text-left ${item.active ? 'bg-muted text-primary' : ''}`}
               >
-                <span className="text-muted-foreground group-hover:text-foreground transition-colors">
-                  {item.icon}
-                </span>
-                <span className="transition-transform group-hover:translate-x-0.5">{item.label}</span>
-              </a>
+                <div className="flex items-center gap-2.5">
+                  <span className={`text-muted-foreground group-hover:text-foreground transition-colors ${item.active ? 'text-primary' : ''}`}>
+                    {item.icon}
+                  </span>
+                  <span className="transition-transform group-hover:translate-x-0.5">{item.label}</span>
+                </div>
+                {item.count !== undefined && item.count > 0 && (
+                  <Badge variant="secondary" className="text-xs">
+                    {item.count}
+                  </Badge>
+                )}
+              </button>
             ))}
           </nav>
         </CardContent>
