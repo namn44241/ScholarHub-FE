@@ -2,42 +2,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Heart } from "lucide-react"
-import { useState } from "react"
-import { generateUniqueId } from "../utils/functions"
+import { useState, useEffect } from "react"
+import { communityApi } from "../services/community-api"
 import type { IComment } from "../utils/types"
 
 interface ICommentSectionProps {
     postId: string
 }
 
-const CommentSection = ({ }: ICommentSectionProps) => {
-    
-    const [comments, setComments] = useState<IComment[]>([
-        {
-            id: "1",
-            author: {
-                name: "Lisa Thompson",
-                role: "UX Researcher",
-                avatar: "/placeholder.svg?height=32&width=32",
-            },
-            content: "Great insights! I've been working on something similar and found that consistency is key.",
-            timestamp: "1h ago",
-            likes: 5,
-        },
-        {
-            id: "2",
-            author: {
-                name: "Mark Wilson",
-                role: "Frontend Developer",
-                avatar: "/placeholder.svg?height=32&width=32",
-            },
-            content: "Would love to hear more about your approach to this problem!",
-            timestamp: "30m ago",
-            likes: 2,
-        },
-    ])
-
+const CommentSection = ({ postId }: ICommentSectionProps) => {
+    const [comments, setComments] = useState<IComment[]>([])
     const [newComment, setNewComment] = useState("")
+    const [loading, setLoading] = useState(true)
 
     const currentUser = {
         name: "John Doe",
@@ -45,24 +21,62 @@ const CommentSection = ({ }: ICommentSectionProps) => {
         avatar: "/placeholder.svg?height=32&width=32",
     }
 
-    const handleAddComment = () => {
+    // Load comments từ API
+    useEffect(() => {
+        loadComments()
+    }, [postId])
+
+    const loadComments = async () => {
+        try {
+            setLoading(true)
+            const response = await communityApi.getComments(postId)
+            if (response.success) {
+                setComments(response.payload.comments)
+            }
+        } catch (err) {
+            console.error('Error loading comments:', err)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleAddComment = async () => {
         if (!newComment.trim()) return
 
-        const comment: IComment = {
-            id: generateUniqueId(),
-            author: currentUser,
-            content: newComment,
-            timestamp: "Just now",
-            likes: 0,
+        try {
+            const response = await communityApi.createComment(postId, {
+                content: newComment
+            })
+            
+            if (response.success) {
+                setNewComment("")
+                // Reload comments để có comment mới
+                loadComments()
+            }
+        } catch (err) {
+            console.error('Error creating comment:', err)
         }
-
-        setComments([...comments, comment])
-        setNewComment("")
     }
 
     const handleLikeComment = (commentId: string) => {
+        // TODO: Implement comment like API
         setComments(
-            comments.map((comment) => (comment.id === commentId ? { ...comment, likes: comment.likes + 1 } : comment)),
+            comments.map((comment) => 
+                comment.id === commentId 
+                    ? { ...comment, likes: comment.likes + 1 } 
+                    : comment
+            )
+        )
+    }
+
+    if (loading) {
+        return (
+            <div className="space-y-4 mt-2 pt-3 border-muted-foreground/10 border-t">
+                <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+            </div>
         )
     }
 
