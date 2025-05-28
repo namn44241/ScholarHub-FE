@@ -18,9 +18,9 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
     const [replyContent, setReplyContent] = useState("")
 
     const currentUser = {
-        name: "John Doe",
+        name: "",
         role: "Frontend Developer",
-        avatar: "/placeholder.svg?height=32&width=32",
+        avatar: undefined,
     }
 
     // Load comments từ API
@@ -114,8 +114,8 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
         <div className="space-y-4 mt-2 pt-3 border-muted-foreground/10 border-t">
             <div className="flex gap-2">
                 <Avatar className="w-8 h-8">
-                    <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
-                    <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={currentUser.avatar || undefined} alt={currentUser.name} />
+                    <AvatarFallback className="bg-primary text-primary-foreground font-semibold">{currentUser.name.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-1 gap-2">
                     <Input
@@ -134,8 +134,8 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
                 {comments.map((comment) => (
                     <div key={comment.id} className="flex gap-2">
                         <Avatar className="w-8 h-8">
-                            <AvatarImage src={comment.author.avatar || "/placeholder.svg"} alt={comment.author.name} />
-                            <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
+                            <AvatarImage src={comment.author.avatar || undefined} alt={comment.author.name} />
+                            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">{comment.author.name.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
                             <div className="bg-muted/50 p-2 rounded-lg">
@@ -172,8 +172,8 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
                             {replyingTo === comment.id && (
                                 <div className="flex gap-2 mt-2 ml-2">
                                     <Avatar className="w-6 h-6">
-                                        <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
-                                        <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
+                                        <AvatarImage src={currentUser.avatar || undefined} alt={currentUser.name} />
+                                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold">{currentUser.name.charAt(0).toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex flex-1 gap-2">
                                         <Input

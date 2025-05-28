@@ -8,6 +8,7 @@ import { useState } from "react"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import CommentSection from "./comment-section"
 import type { IPost } from "../utils/types"
+import { communityApi } from "../services/community-api"
 
 interface IPostProps {
     post: IPost
@@ -16,14 +17,33 @@ interface IPostProps {
 
 const Post = ({ post, onReaction }: IPostProps) => {
     const [showComments, setShowComments] = useState(false)
+    const [isReposting, setIsReposting] = useState(false)
+
+    const handleRepost = async () => {
+        try {
+            setIsReposting(true)
+            await communityApi.createRepost(post.id)
+            // Reload posts để thấy repost mới
+            window.location.reload()
+        } catch (error) {
+            console.error('Repost error:', error)
+        } finally {
+            setIsReposting(false)
+        }
+    }
 
     return (
         <Card className="w-full">
             <CardHeader className="flex flex-row items-start space-y-0 pb-3">
                 <div className="flex gap-3">
                     <Avatar className="w-10 h-10">
-                        <AvatarImage src={post.author.avatar || "/placeholder.svg"} alt={post.author.name} />
-                        <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage 
+                            src={post.author.avatar || undefined} 
+                            alt={post.author.name} 
+                        />
+                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                            {post.author.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                         <p className="font-medium text-sm">{post.author.name}</p>
@@ -111,8 +131,14 @@ const Post = ({ post, onReaction }: IPostProps) => {
                         <MessageSquare className="w-4 h-4" />
                         <span className="text-xs">Comment</span>
                     </Button>
-                    <Button variant="ghost" size="sm" className="flex-1 gap-2">
-                        <Repeat className="w-4 h-4" />
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="flex-1 gap-2" 
+                        onClick={handleRepost}
+                        disabled={isReposting}
+                    >
+                        <Repeat className={`w-4 h-4 ${post.userReposted ? "text-green-600" : ""}`} />
                         <span className="text-xs">Repost</span>
                     </Button>
                     <Button variant="ghost" size="sm" className="flex-1 gap-2">

@@ -64,5 +64,10 @@ export const communityApi = {
   async createPostWithMedia(data: CreatePostRequest) {
     const response = await apiClient.post('/community/posts', data)
     return response
+  },
+
+  async createRepost(postId: string) {
+    const response = await apiClient.post(`/community/posts/${postId}/repost`)
+    return response
   }
 } 

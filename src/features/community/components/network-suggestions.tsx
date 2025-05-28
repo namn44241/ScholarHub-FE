@@ -60,10 +60,12 @@ export const NetworkSuggestions = () => {
           <div key={connection.id} className="flex items-start gap-3">
             <Avatar className="size-12">
               <AvatarImage
-                src={connection.avatar || "/placeholder.svg"}
+                src={connection.avatar || undefined}
                 alt={connection.name}
               />
-              <AvatarFallback>{connection.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                {connection.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1 space-y-1">
               <p className="text-sm font-medium leading-none">{connection.name}</p>

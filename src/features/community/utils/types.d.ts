@@ -19,6 +19,7 @@ export interface IPost {
   timestamp: string;
   reactions: IReactions;
   userReacted: boolean;
+  userReposted: boolean;
   tags: string[];
   postType: string;
 }
