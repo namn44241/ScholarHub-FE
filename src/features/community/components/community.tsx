@@ -1,8 +1,9 @@
 import { useAuth } from "@/contexts/auth-context"
-import { SAMPLE_USER_PROFILE } from "@/features/user_profile/utils/constants"
 import { useEffect, useState } from "react"
 import { communityApi } from "../services/community-api"
+import { profileApi } from "@/features/user_profile/services/profile-api"
 import type { IPost } from "../utils/types"
+import type { IUserProfile } from "@/features/user_profile/utils/types"
 import FeedSuggestion from "./feed-suggesstion"
 import MiniProfile from "./mini-profile"
 import { NetworkSuggestions } from "./network-suggestions"
@@ -11,14 +12,66 @@ import PostList from "./post-list"
 
 export const Community = () => {
   const [posts, setPosts] = useState<IPost[]>([])
+  const [userProfile, setUserProfile] = useState<IUserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { user } = useAuth()
 
-  // Load posts từ API
+  // Load posts và profile
   useEffect(() => {
     loadPosts()
+    loadUserProfile()
   }, [])
+
+  const loadUserProfile = async () => {
+    try {
+      const response = await profileApi.getCurrentUserProfile()
+      if (response.success && response.payload?.profile) {
+        setUserProfile(response.payload.profile)
+      } else {
+        // Tạo profile mặc định nếu không có
+        setUserProfile({
+          id: user?.id || '',
+          fullName: user?.username || 'User',
+          avatar: null,
+          coverImage: null,
+          bio: '',
+          location: '',
+          university: '',
+          major: '',
+          yearOfStudy: null,
+          gpa: null,
+          skills: [],
+          interests: [],
+          socialLinks: {},
+          isPublic: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        })
+      }
+    } catch (err) {
+      console.error('Error loading profile:', err)
+      // Tạo profile mặc định khi có lỗi
+      setUserProfile({
+        id: user?.id || '',
+        fullName: user?.username || 'User',
+        avatar: null,
+        coverImage: null,
+        bio: '',
+        location: '',
+        university: '',
+        major: '',
+        yearOfStudy: null,
+        gpa: null,
+        skills: [],
+        interests: [],
+        socialLinks: {},
+        isPublic: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      })
+    }
+  }
 
   const loadPosts = async () => {
     try {
@@ -92,17 +145,15 @@ export const Community = () => {
     <div className="gap-6 grid grid-cols-1 lg:grid-cols-12">
       <div className="hidden md:block lg:col-span-3">
         <div className="top-20 sticky">
-          {
-            user && (
-              <MiniProfile userData={user} profile={SAMPLE_USER_PROFILE} />
-            )
-          }
+          {user && userProfile && (
+            <MiniProfile userData={user} profile={userProfile} />
+          )}
         </div>
       </div>
 
       <div className="lg:col-span-6">
         <div className="flex flex-col gap-6">
-          <PostCreator onCreatePost={handleCreatePost} userData={SAMPLE_USER_PROFILE} />
+          <PostCreator onCreatePost={handleCreatePost} userData={userProfile} />
           <PostList posts={posts} onReaction={handleReaction} />
         </div>
       </div>
