@@ -37,22 +37,9 @@ export const Community = () => {
     }
   }
 
-  const handleCreatePost = async (newPost: IPost) => {
-    try {
-      const response = await communityApi.createPost({
-        content: newPost.content,
-        image: newPost.image,
-        post_type: newPost.postType,
-        tags: newPost.tags
-      })
-      
-      if (response.success) {
-        // Reload posts để có post mới
-        loadPosts()
-      }
-    } catch (err) {
-      console.error('Error creating post:', err)
-    }
+  const handleCreatePost = async (newPost: any) => {
+    // PostCreator đã tạo post rồi, chỉ cần refresh danh sách
+    loadPosts()
   }
 
   const handleReaction = async (postId: string) => {

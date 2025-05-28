@@ -4,6 +4,8 @@ import type { IPost, IComment } from "../utils/types"
 export interface CreatePostRequest {
   content: string
   image?: string
+  video?: string
+  files?: string[]
   post_type?: string
   tags?: string[]
 }
@@ -56,6 +58,11 @@ export const communityApi = {
   // Connections API
   async getConnectionSuggestions() {
     const response = await apiClient.get('/community/connections')
+    return response
+  },
+
+  async createPostWithMedia(data: CreatePostRequest) {
+    const response = await apiClient.post('/community/posts', data)
     return response
   }
 } 

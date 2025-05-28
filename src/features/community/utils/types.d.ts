@@ -15,6 +15,7 @@ export interface IPost {
   author: IAuthor;
   content: string;
   image?: string;
+  video?: string;
   timestamp: string;
   reactions: IReactions;
   userReacted: boolean;

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
-import { Heart, MessageSquare, MoreHorizontal, Repeat, Send } from "lucide-react"
+import { Heart, MessageSquare, MoreHorizontal, Repeat, Send, FileText } from "lucide-react"
 import { useState } from "react"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import CommentSection from "./comment-section"
@@ -48,9 +48,48 @@ const Post = ({ post, onReaction }: IPostProps) => {
             </CardHeader>
             <CardContent className="pb-3">
                 <p className="mb-4 text-sm">{post.content}</p>
+                
+                {/* Render Image */}
                 {post.image && (
-                    <div className="relative rounded-md w-full aspect-video overflow-hidden">
-                        <LazyLoadImage src={post.image || "/placeholder.svg"} alt="Post image" className="object-cover" />
+                    <div className="relative rounded-md w-full aspect-video overflow-hidden mb-3">
+                        <LazyLoadImage 
+                            src={post.image || "/placeholder.svg"} 
+                            alt="Post image" 
+                            className="object-cover w-full h-full" 
+                        />
+                    </div>
+                )}
+
+                {/* Render Video */}
+                {post.video && (
+                    <div className="relative rounded-md w-full aspect-video overflow-hidden mb-3">
+                        <video 
+                            src={post.video} 
+                            controls 
+                            className="w-full h-full object-cover"
+                            preload="metadata"
+                        >
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                )}
+
+                {/* Render Files */}
+                {post.files && post.files.length > 0 && (
+                    <div className="space-y-2 mb-3">
+                        {post.files.map((fileUrl, index) => (
+                            <div key={index} className="flex items-center gap-2 p-2 border rounded">
+                                <FileText className="w-4 h-4" />
+                                <a 
+                                    href={fileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer" 
+                                    className="text-sm flex-1 text-blue-600 hover:underline"
+                                >
+                                    {fileUrl.split('/').pop()}
+                                </a>
+                            </div>
+                        ))}
                     </div>
                 )}
             </CardContent>
