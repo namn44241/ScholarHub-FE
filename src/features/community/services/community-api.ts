@@ -46,6 +46,13 @@ export const communityApi = {
     return response
   },
 
+  async toggleCommentReaction(postId: string, commentId: string, reactionType: string = "like") {
+    const response = await apiClient.post(`/community/posts/${postId}/comments/${commentId}/reaction`, {
+      reaction_type: reactionType
+    })
+    return response
+  },
+
   // Connections API
   async getConnectionSuggestions() {
     const response = await apiClient.get('/community/connections')

@@ -14,6 +14,8 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
     const [comments, setComments] = useState<IComment[]>([])
     const [newComment, setNewComment] = useState("")
     const [loading, setLoading] = useState(true)
+    const [replyingTo, setReplyingTo] = useState<string | null>(null)
+    const [replyContent, setReplyContent] = useState("")
 
     const currentUser = {
         name: "John Doe",
@@ -50,7 +52,6 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
             
             if (response.success) {
                 setNewComment("")
-                // Reload comments để có comment mới
                 loadComments()
             }
         } catch (err) {
@@ -58,15 +59,44 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
         }
     }
 
-    const handleLikeComment = (commentId: string) => {
-        // TODO: Implement comment like API
-        setComments(
-            comments.map((comment) => 
-                comment.id === commentId 
-                    ? { ...comment, likes: comment.likes + 1 } 
-                    : comment
-            )
-        )
+    const handleLikeComment = async (commentId: string) => {
+        try {
+            const response = await communityApi.toggleCommentReaction(postId, commentId, "like")
+            
+            if (response.success) {
+                loadComments()
+            }
+        } catch (err) {
+            console.error('Error liking comment:', err)
+        }
+    }
+
+    const handleReply = (comment: IComment) => {
+        setReplyingTo(comment.id)
+        setReplyContent(`@${comment.author.name} `)
+    }
+
+    const handleSubmitReply = async () => {
+        if (!replyContent.trim()) return
+
+        try {
+            const response = await communityApi.createComment(postId, {
+                content: replyContent
+            })
+            
+            if (response.success) {
+                setReplyContent("")
+                setReplyingTo(null)
+                loadComments()
+            }
+        } catch (err) {
+            console.error('Error creating reply:', err)
+        }
+    }
+
+    const handleCancelReply = () => {
+        setReplyingTo(null)
+        setReplyContent("")
     }
 
     if (loading) {
@@ -122,16 +152,56 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="px-2 h-6 text-xs"
+                                    className={`px-2 h-6 text-xs ${comment.userLiked ? 'text-red-500' : ''}`}
                                     onClick={() => handleLikeComment(comment.id)}
                                 >
-                                    <Heart className="mr-1 w-3 h-3" />
+                                    <Heart className={`mr-1 w-3 h-3 ${comment.userLiked ? 'fill-current' : ''}`} />
                                     {comment.likes > 0 && comment.likes}
                                 </Button>
-                                <Button variant="ghost" size="sm" className="px-2 h-6 text-xs">
-                                    Reply
-                                </Button>
+                                {replyingTo !== comment.id && (
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        className="px-2 h-6 text-xs"
+                                        onClick={() => handleReply(comment)}
+                                    >
+                                        Reply
+                                    </Button>
+                                )}
                             </div>
+                            {replyingTo === comment.id && (
+                                <div className="flex gap-2 mt-2 ml-2">
+                                    <Avatar className="w-6 h-6">
+                                        <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
+                                        <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-1 gap-2">
+                                        <Input
+                                            placeholder={`Reply to ${comment.author.name}...`}
+                                            value={replyContent}
+                                            onChange={(e) => setReplyContent(e.target.value)}
+                                            className="flex-1 h-8 text-xs"
+                                            autoFocus
+                                        />
+                                        <Button 
+                                            size="sm" 
+                                            onClick={handleSubmitReply} 
+                                            disabled={!replyContent.trim()}
+                                            className="h-8 px-3 text-xs"
+                                        >
+                                            Reply
+                                        </Button>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            onClick={handleCancelReply}
+                                            className="h-8 px-3 text-xs"
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}
