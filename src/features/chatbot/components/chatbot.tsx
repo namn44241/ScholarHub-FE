@@ -3,9 +3,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useNavigate } from "@tanstack/react-router"
 import { Menu } from 'lucide-react'
 import { useEffect, useState } from "react"
-import { useNewThread, useThreadsList } from "../hooks/useChatbot"
+import { useNewThread, useThreadsList } from "../hooks/use-chatbot"
 import { ChatInterface } from "./chat-interface"
-import { ThreadList } from "./ThreadList"
+import { ThreadList } from "./thread-list"
 
 interface IChatbotProps {
     userId: string

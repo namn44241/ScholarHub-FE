@@ -1,47 +1,45 @@
-import bannerMock from "@/assets/images/banner_mock.jpg"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import type { IUserProfile } from "@/features/user_profile"
-import type { IUser } from "@/types/user"
-import { useNavigate } from "@tanstack/react-router"
-import { ArrowUpRight, Bookmark, GraduationCap, Navigation, Users } from 'lucide-react'
-import { LazyLoadImage } from "react-lazy-load-image-component"
-import { useEffect, useState } from "react"
-import { communityApi } from "../services/community-api"
+import bannerMock from "@/assets/images/banner_mock.jpg";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import type { IUserProfile } from "@/features/user_profile";
+import type { IUser } from "@/types/user";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  ArrowUpRight,
+  Bookmark,
+  GraduationCap,
+  Navigation,
+  Users,
+} from "lucide-react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useGetSavedPostsCount } from "../hooks/use-community";
 
-const MiniProfile = ({ 
-  userData, 
-  profile, 
-  onShowSavedPosts, 
-  onShowFeed,
-  currentView 
-}: { 
-  userData: IUser, 
-  profile: IUserProfile,
-  onShowSavedPosts: () => void,
-  onShowFeed: () => void,
-  currentView: 'feed' | 'saved'
+const MiniProfile = ({
+  userData,
+  profile,
+  onShowSavedPosts,
+  currentView,
+}: {
+  userData: IUser;
+  profile: IUserProfile;
+  onShowSavedPosts: () => void;
+  currentView: "feed" | "saved";
 }) => {
-  const navigate = useNavigate()
-  const [savedPostsCount, setSavedPostsCount] = useState(0)
+  const navigate = useNavigate();
 
-  // Load saved posts count
-  useEffect(() => {
-    const loadSavedPostsCount = async () => {
-      try {
-        const response = await communityApi.getSavedPostsCount()
-        if (response.success) {
-          setSavedPostsCount(response.payload.count)
-        }
-      } catch (error) {
-        console.error('Load saved posts count error:', error)
-      }
-    }
-    
-    loadSavedPostsCount()
-  }, [])
+  const {
+    data: savedPostsCount = 0,
+    isLoading: savedCountLoading,
+    error: savedCountError,
+  } = useGetSavedPostsCount();
 
   const navigationItems = [
     {
@@ -49,27 +47,29 @@ const MiniProfile = ({
       label: "Saved Posts",
       onClick: onShowSavedPosts,
       count: savedPostsCount,
-      active: currentView === 'saved'
+      active: currentView === "saved",
+      loading: savedCountLoading,
     },
-    { 
-      icon: <Users className="size-4" />, 
-      label: "Groups", 
-      onClick: () => {}, 
-      active: false 
-    },
-    { 
-      icon: <GraduationCap className="size-4" />, 
-      label: "My Scholarships", 
+    {
+      icon: <Users className="size-4" />,
+      label: "Groups",
       onClick: () => {},
-      active: false 
+      active: false,
+      loading: false,
     },
-  ]
+    {
+      icon: <GraduationCap className="size-4" />,
+      label: "My Scholarships",
+      onClick: () => {},
+      active: false,
+      loading: false,
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-3 w-full">
       <Card className="shadow-sm pt-0 border border-muted-foreground/20 overflow-hidden">
         <div className="relative">
-          {/* Banner */}
           <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-background h-24 sm:h-28">
             {bannerMock && (
               <LazyLoadImage
@@ -79,12 +79,14 @@ const MiniProfile = ({
               />
             )}
           </div>
-
-          {/* Avatar - positioned to overlap the banner */}
           <div className="bottom-0 left-4 absolute translate-y-1/2 transform">
             <div className="border-4 border-mute rounded-full overflow-hidden">
               <Avatar className="size-16 sm:size-20">
-                <AvatarImage src={userData.avatar} alt={userData.email} className="object-cover" />
+                <AvatarImage
+                  src={userData.avatar}
+                  alt={userData.email}
+                  className="object-cover"
+                />
                 <AvatarFallback className="font-bold text-4xl">
                   {profile.first_name?.charAt(0)}
                 </AvatarFallback>
@@ -93,7 +95,6 @@ const MiniProfile = ({
           </div>
         </div>
 
-        {/* Profile info - with padding to accommodate the overlapping avatar */}
         <CardContent className="pt-6">
           <div className="flex flex-col">
             <p className="font-semibold text-xl">
@@ -108,7 +109,14 @@ const MiniProfile = ({
         </CardContent>
 
         <CardFooter>
-          <Button variant="outline" size="sm" className="w-full" onClick={() => navigate({ to: "/profile/$userId", params: { userId: "1" } })}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={() =>
+              navigate({ to: "/profile/$userId", params: { userId: "1" } })
+            }
+          >
             View Profile
             <ArrowUpRight className="size-4" />
           </Button>
@@ -128,26 +136,45 @@ const MiniProfile = ({
               <button
                 key={index}
                 onClick={item.onClick}
-                className={`group flex items-center justify-between hover:bg-muted/80 px-2 py-1.5 rounded-md font-medium text-sm transition-all w-full text-left ${item.active ? 'bg-muted text-primary' : ''}`}
+                disabled={item.loading}
+                className={`group flex items-center justify-between hover:bg-muted/80 px-2 py-1.5 rounded-md font-medium text-sm transition-all w-full text-left disabled:opacity-50 disabled:cursor-not-allowed ${
+                  item.active ? "bg-muted text-primary" : ""
+                }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className={`text-muted-foreground group-hover:text-foreground transition-colors ${item.active ? 'text-primary' : ''}`}>
+                  <span
+                    className={`text-muted-foreground group-hover:text-foreground transition-colors ${
+                      item.active ? "text-primary" : ""
+                    }`}
+                  >
                     {item.icon}
                   </span>
-                  <span className="transition-transform group-hover:translate-x-0.5">{item.label}</span>
+                  <span className="transition-transform group-hover:translate-x-0.5">
+                    {item.label}
+                  </span>
                 </div>
-                {item.count !== undefined && item.count > 0 && (
+                {item.loading ? (
+                  <div className="border-primary border-b-2 rounded-full w-3 h-3 animate-spin"></div>
+                ) : item.count !== undefined && item.count > 0 ? (
                   <Badge variant="secondary" className="text-xs">
                     {item.count}
                   </Badge>
-                )}
+                ) : null}
               </button>
             ))}
           </nav>
+
+          {savedCountError && (
+            <div className="mt-2 text-red-500 text-xs">
+              {savedCountError instanceof Error
+                ? savedCountError.message
+                : "Không thể tải số lượng bài đã lưu"}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default MiniProfile
+export default MiniProfile;

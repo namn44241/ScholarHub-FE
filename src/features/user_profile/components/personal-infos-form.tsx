@@ -28,7 +28,7 @@ import {
   validateDateFormat,
 } from "@/utils/functions";
 import { useState } from "react";
-import { usePutPersonal } from "../hooks/usePersonalInfo";
+import { usePutPersonal } from "../hooks/use-personal";
 import { GENDER_TYPE } from "../utils/constants";
 import type { IPersonalInfoFormProps } from "../utils/types";
 

@@ -5,7 +5,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { truncateText } from "@/utils/functions"
 import { Briefcase, ChevronDown, ChevronUp, FlaskRoundIcon, Heart, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from "react"
-import { useDeleteExperience, useGetExperience, usePostExperience, usePutExperience } from "../hooks/useExperience"
+import { useDeleteExperience, useGetExperience, usePostExperience, usePutExperience } from "../hooks/use-experience"
 import { EXPERIENCE_TYPE } from "../utils/constants"
 import { formatDate } from "../utils/functions"
 import type { IExperience, IExperiencesSectionProps } from "../utils/types"

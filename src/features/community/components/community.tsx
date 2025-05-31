@@ -1,218 +1,105 @@
-import { useAuth } from "@/contexts/auth-context"
-import { useEffect, useState } from "react"
-import { communityApi } from "../services/community-api"
-import { profileApi } from "@/features/user_profile/services/profile-api"
-import type { IPost } from "../utils/types"
-import type { IUserProfile } from "@/features/user_profile/utils/types"
-import FeedSuggestion from "./feed-suggesstion"
-import MiniProfile from "./mini-profile"
-import { NetworkSuggestions } from "./network-suggestions"
-import PostCreator from "./post-creator"
-import PostList from "./post-list"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Bookmark } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/contexts/auth-context";
+import { useGetPersonal } from "@/features/user_profile";
+import { ArrowLeft, Bookmark } from "lucide-react";
+import { useState } from "react";
+import { useGetCommunityPosts, useGetSavedPosts } from "../hooks/use-community";
+import type { IPost } from "../utils/types";
+import MiniProfile from "./mini-profile";
+import { NetworkSuggestions } from "./network-suggestions";
+import PostCreator from "./post-creator";
+import PostList from "./post-list";
 
 export const Community = () => {
-  const [posts, setPosts] = useState<IPost[]>([])
-  const [userProfile, setUserProfile] = useState<IUserProfile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  
-  // Thêm state cho current view
-  const [currentView, setCurrentView] = useState<'feed' | 'saved'>('feed')
-  const [savedPosts, setSavedPosts] = useState<IPost[]>([])
-  const [savedLoading, setSavedLoading] = useState(false)
-  
-  // Thêm state cho hidden posts
-  const [hiddenPosts, setHiddenPosts] = useState<Set<string>>(new Set())
-  
-  const { user } = useAuth()
+  const { user } = useAuth();
+  const { data: userProfile } = useGetPersonal();
 
-  // Load posts và profile
-  useEffect(() => {
-    loadPosts()
-    loadUserProfile()
-  }, [])
+  const [currentView, setCurrentView] = useState<"feed" | "saved">("feed");
+  const [hiddenPosts, setHiddenPosts] = useState<Set<string>>(new Set());
 
-  const loadUserProfile = async () => {
-    try {
-      const response = await profileApi.getCurrentUserProfile()
-      if (response.success && response.payload?.profile) {
-        setUserProfile(response.payload.profile)
-      } else {
-        // Tạo profile mặc định nếu không có
-        setUserProfile({
-          id: user?.id || '',
-          fullName: user?.username || 'User',
-          avatar: null,
-          coverImage: null,
-          bio: '',
-          location: '',
-          university: '',
-          major: '',
-          yearOfStudy: null,
-          gpa: null,
-          skills: [],
-          interests: [],
-          socialLinks: {},
-          isPublic: true,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        })
-      }
-    } catch (err) {
-      console.error('Error loading profile:', err)
-      // Tạo profile mặc định khi có lỗi
-      setUserProfile({
-        id: user?.id || '',
-        fullName: user?.username || 'User',
-        avatar: null,
-        coverImage: null,
-        bio: '',
-        location: '',
-        university: '',
-        major: '',
-        yearOfStudy: null,
-        gpa: null,
-        skills: [],
-        interests: [],
-        socialLinks: {},
-        isPublic: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      })
-    }
-  }
+  const {
+    data: posts = [],
+    isLoading: postsLoading,
+    error: postsError,
+    refetch: refetchPosts,
+  } = useGetCommunityPosts(1, 20);
 
-  const loadPosts = async () => {
-    try {
-      setLoading(true)
-      const response = await communityApi.getPosts(1, 20)
-      if (response.success) {
-        setPosts(response.payload.posts)
-      } else {
-        setError("Không thể tải bài viết")
-      }
-    } catch (err) {
-      setError("Lỗi kết nối")
-      console.error('Error loading posts:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {
+    data: savedPosts = [],
+    isLoading: savedLoading,
+    error: savedError,
+    refetch: refetchSavedPosts,
+  } = useGetSavedPosts(1, 20);
 
-  const handleCreatePost = async (newPost: any) => {
-    // PostCreator đã tạo post rồi, chỉ cần refresh danh sách
-    loadPosts()
-  }
-
-  const handleReaction = async (postId: string) => {
-    try {
-      await communityApi.toggleReaction(postId, "like")
-      
-      // Update local state optimistically
-      setPosts(
-        posts.map((post) =>
-          post.id === postId
-            ? {
-              ...post,
-              userReacted: !post.userReacted,
-              reactions: {
-                ...post.reactions,
-                likes: post.userReacted ? post.reactions.likes - 1 : post.reactions.likes + 1,
-              },
-            }
-            : post,
-        ),
-      )
-    } catch (err) {
-      console.error('Error toggling reaction:', err)
-    }
-  }
-
-  // Thêm function load saved posts
-  const loadSavedPosts = async () => {
-    try {
-      setSavedLoading(true)
-      const response = await communityApi.getSavedPosts(1, 20)
-      if (response.success) {
-        setSavedPosts(response.payload.posts)
-      }
-    } catch (error) {
-      console.error('Load saved posts error:', error)
-    } finally {
-      setSavedLoading(false)
-    }
-  }
-
-  // Function để switch view
   const handleShowSavedPosts = () => {
-    setCurrentView('saved')
-    loadSavedPosts()
-  }
+    setCurrentView("saved");
+    refetchSavedPosts();
+  };
 
   const handleShowFeed = () => {
-    setCurrentView('feed')
-  }
+    setCurrentView("feed");
+  };
 
-  // Thêm function để hide post
   const handleHidePost = (postId: string) => {
-    setHiddenPosts(prev => new Set([...prev, postId]))
-  }
+    setHiddenPosts((prev) => new Set([...prev, postId]));
+  };
 
-  // Filter posts để loại bỏ hidden posts
-  const visiblePosts = posts.filter(post => !hiddenPosts.has(post.id))
-  const visibleSavedPosts = savedPosts.filter(post => !hiddenPosts.has(post.id))
+  const visiblePosts = posts.filter((post: IPost) => !hiddenPosts.has(post.id));
+  const visibleSavedPosts = savedPosts.filter(
+    (post: IPost) => !hiddenPosts.has(post.id)
+  );
 
-  if (loading) {
+  if (postsLoading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="border-primary border-b-2 rounded-full w-8 h-8 animate-spin"></div>
       </div>
-    )
+    );
   }
 
-  if (error) {
+  // Error state
+  if (postsError) {
+    const errorMessage =
+      postsError instanceof Error ? postsError.message : "Lỗi kết nối";
+
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">{error}</p>
-        <button 
-          onClick={loadPosts}
-          className="mt-2 px-4 py-2 bg-primary text-white rounded-md"
+      <div className="py-8 text-center">
+        <p className="text-red-500">{errorMessage}</p>
+        <button
+          onClick={() => refetchPosts()}
+          className="bg-primary mt-2 px-4 py-2 rounded-md text-white"
+          disabled={postsLoading}
         >
-          Thử lại
+          {postsLoading ? "Đang tải..." : "Thử lại"}
         </button>
       </div>
-    )
+    );
   }
 
   return (
     <div className="gap-6 grid grid-cols-1 lg:grid-cols-12">
+      {/* Left Sidebar */}
       <div className="hidden md:block lg:col-span-3">
         <div className="top-20 sticky">
           {user && userProfile && (
-            <MiniProfile 
-              userData={user} 
+            <MiniProfile
+              userData={user}
               profile={userProfile}
               onShowSavedPosts={handleShowSavedPosts}
-              onShowFeed={handleShowFeed}
               currentView={currentView}
             />
           )}
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="lg:col-span-6">
         <div className="flex flex-col gap-6">
-          {currentView === 'feed' ? (
+          {currentView === "feed" ? (
             <>
-              <PostCreator onCreatePost={handleCreatePost} userData={userProfile} />
-              <PostList 
-                posts={visiblePosts} 
-                onReaction={handleReaction} 
-                onHidePost={handleHidePost}
-              />
+              <PostCreator />
+              <PostList posts={visiblePosts} onHidePost={handleHidePost} />
             </>
           ) : (
             <>
@@ -237,19 +124,37 @@ export const Community = () => {
               {/* Saved Posts Content */}
               {savedLoading ? (
                 <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <div className="border-primary border-b-2 rounded-full w-8 h-8 animate-spin"></div>
                 </div>
+              ) : savedError ? (
+                <Card>
+                  <CardContent className="py-8 text-center">
+                    <p className="mb-4 text-red-500">
+                      {savedError instanceof Error
+                        ? savedError.message
+                        : "Không thể tải bài viết đã lưu"}
+                    </p>
+                    <Button
+                      onClick={() => refetchSavedPosts()}
+                      variant="outline"
+                      disabled={savedLoading}
+                    >
+                      {savedLoading ? "Đang tải..." : "Thử lại"}
+                    </Button>
+                  </CardContent>
+                </Card>
               ) : visibleSavedPosts.length === 0 ? (
                 <Card>
-                  <CardContent className="text-center py-8">
-                    <Bookmark className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Chưa có bài viết nào được lưu</p>
+                  <CardContent className="py-8 text-center">
+                    <Bookmark className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      Chưa có bài viết nào được lưu
+                    </p>
                   </CardContent>
                 </Card>
               ) : (
-                <PostList 
-                  posts={visibleSavedPosts} 
-                  onReaction={handleReaction} 
+                <PostList
+                  posts={visibleSavedPosts}
                   onHidePost={handleHidePost}
                 />
               )}
@@ -258,10 +163,10 @@ export const Community = () => {
         </div>
       </div>
 
+      {/* Right Sidebar */}
       <div className="hidden lg:block space-y-6 lg:col-span-3">
-        <FeedSuggestion />
         <NetworkSuggestions />
       </div>
     </div>
-  )
-}
+  );
+};

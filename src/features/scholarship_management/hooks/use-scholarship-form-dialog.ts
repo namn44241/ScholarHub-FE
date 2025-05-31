@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import type { FormType } from "../utils/types";
-import { usePostScholarship } from "./useScholarships";
+import { usePostScholarship } from "./use-scholarship-management";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),

@@ -22,7 +22,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
-import { usePostScholarshipMatching } from "../hooks/useScholarshipMatching";
+import { usePostScholarshipMatching } from "../hooks/use-scholarship-matching";
 import { MatchingRadarChart } from "./matching-radar-chart";
 import { MatchingSkeleton } from "./matching-skeleton";
 

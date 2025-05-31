@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useGetPersonal } from "../hooks/usePersonalInfo";
+import { useGetPersonal } from "../hooks/use-personal";
 import type { IProfileHeaderProps } from "../utils/types";
 
 export const ProfileHeader = ({

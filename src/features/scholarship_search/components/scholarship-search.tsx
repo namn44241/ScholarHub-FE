@@ -18,7 +18,7 @@ import {
   useForceRecreateScholarshipRecommend,
   useRecommendScholarships,
   useSearchScholarships,
-} from "../hooks/useScholarship";
+} from "../hooks/use-scholarship";
 import type { SEARCH_KEYS } from "../utils/constants";
 import type { FilterOption } from "../utils/types";
 import MobileScholarshipFilter from "./mobile-scholarship-filter";

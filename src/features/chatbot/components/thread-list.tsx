@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { formatDistanceToNow } from "date-fns"
 import { PlusIcon, Trash2 } from 'lucide-react'
 import { useState } from "react"
-import { useDeleteThread } from "../hooks/useChatbot"
+import { useDeleteThread } from "../hooks/use-chatbot"
 import type { IThread } from "../utils/types"
 
 interface IThreadListProps {

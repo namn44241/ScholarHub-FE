@@ -1,7 +1,7 @@
 import { GC_TIME, STALE_TIME } from "@/utils/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { scholarshipSearchServices } from "../services/scholarshipSearchServices";
+import { scholarshipSearchServices } from "../services/scholarship-search";
 
 export const scholarshipSearchKeys = {
   all: ["scholarshipSearch"] as const,

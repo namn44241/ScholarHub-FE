@@ -10,7 +10,7 @@ export const ReadySection = () => {
     return (
         <div
             id="ready-to-dive-in"
-            className="w-full bg-muted py-8 sm:py-12 md:py-16 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6"
+            className="flex flex-col items-center gap-4 sm:gap-6 bg-muted px-4 sm:px-6 py-8 sm:py-12 md:py-16 w-full"
         >
             <AnimatedContent
                 distance={50}
@@ -23,10 +23,10 @@ export const ReadySection = () => {
                 threshold={0.2}
             >
                 <div>
-                    <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-center mb-2 sm:mb-4">
+                    <p className="mb-2 sm:mb-4 font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center">
                         Ready to dive in?
                     </p>
-                    <p className="text-sm sm:text-base md:text-lg font-bricolage text-center text-muted-foreground max-w-3xl mx-auto">
+                    <p className="mx-auto max-w-3xl font-bricolage text-muted-foreground text-sm sm:text-base md:text-lg text-center">
                         Start your scholarship journey with us today!
                     </p>
                 </div>
@@ -34,7 +34,7 @@ export const ReadySection = () => {
 
             <AnimatedContent
                 distance={50}
-                delay={200}
+                delay={0.15}
                 direction="vertical"
                 reverse={false}
                 transition={{ type: "spring", stiffness: 100, damping: 30 }}
@@ -42,14 +42,14 @@ export const ReadySection = () => {
                 animateOpacity
                 threshold={0.2}
             >
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-2 sm:mt-4">
+                <div className="flex sm:flex-row flex-col justify-center items-center gap-3 sm:gap-6 mt-2 sm:mt-4">
                     <Button variant="outline" onClick={() => scrollToSection("hero")} className="w-full sm:w-auto">
                         Go back to top
                     </Button>
 
                     <Button
                         onClick={() => navigate({ to: "/auth/register" })}
-                        className="w-full sm:w-auto flex items-center gap-2"
+                        className="flex items-center gap-2 w-full sm:w-auto"
                     >
                         Register Now
                         <ArrowUpRight className="size-4" />

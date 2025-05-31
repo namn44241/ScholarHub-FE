@@ -14,7 +14,7 @@ import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Save, Trash2, Upload } from "lucide-react"
 import { useCallback } from "react"
 import { toast } from "sonner"
-import { useDocumentForm } from "../hooks/useDocumentForm"
+import { useDocumentForm } from "../hooks/use-document"
 import type { IDocumentFormProps } from "../utils/types"
 
 const DocumentForm = ({ onSubmit, onCancel }: IDocumentFormProps) => {

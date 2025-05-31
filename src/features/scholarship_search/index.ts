@@ -1,2 +1,2 @@
 export * from "./components/scholarship-search";
-export * from "./hooks/useScholarship"
+export * from "./hooks/use-scholarship"

@@ -4,7 +4,7 @@ import {
   chatbotService,
   type IChatDTO,
   type IThreadDTO,
-} from "../services/chatbotService";
+} from "../services/chatbot";
 
 export const chatbotKeys = {
   all: ["chatbot"] as const,

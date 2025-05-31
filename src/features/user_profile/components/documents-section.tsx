@@ -11,7 +11,7 @@ import { Eye, FileText, PackageOpen, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import type { IDocumentsSectionProps } from "../utils/types"
 import DocumentForm from "./deocuments-form"
-import type { DocumentFormValues } from "../hooks/useDocumentForm"
+import type { DocumentFormValues } from "../hooks/use-document"
 
 const DocumentsSection = ({ documents, isCurrentUser }: IDocumentsSectionProps) => {
   const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false)

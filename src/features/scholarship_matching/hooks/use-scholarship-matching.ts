@@ -3,7 +3,7 @@ import {
   scholarshipMatchingService,
   type IScholarshipMatchingDTO,
   type IScholarshipMatchingResponse,
-} from "../services/scholarshipMatchingService";
+} from "../services/scholarship-matching";
 
 export const scholarshipMatchingKeys = {
   all: ["scholarship-matching"] as const,

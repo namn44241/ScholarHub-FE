@@ -32,6 +32,7 @@ export interface IComment {
   content: string;
   timestamp: string;
   likes: number;
+  userLiked: boolean;
 }
 
 export interface IConnection {
@@ -44,9 +45,8 @@ export interface IConnection {
   programs?: string[];
 }
 
-export interface IPostListProps {
-  posts: IPost[]
-  onReaction: (postId: string) => void
-  loadMorePosts?: () => void
-  onHidePost?: (postId: string) => void
+interface IAttachments {
+  images: string[];
+  videos: string[];
+  files: string[];
 }

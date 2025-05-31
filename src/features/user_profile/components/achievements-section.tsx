@@ -5,7 +5,7 @@ import { truncateText } from "@/utils/functions"
 import { Award, ChevronDown, ChevronUp, Pencil, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { LazyLoadImage } from "react-lazy-load-image-component"
-import { useDeleteAchievement, useGetAchievement, usePostAchievement, usePutAchievement } from "../hooks/useAchievement"
+import { useDeleteAchievement, useGetAchievement, usePostAchievement, usePutAchievement } from "../hooks/use-achievement"
 import type { IAchievement, IAchievementsSectionProps } from "../utils/types"
 import AchievementsForm, { type AchievementsFormValues } from "./achievements-form"
 

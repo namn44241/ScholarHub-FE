@@ -4,7 +4,7 @@ import {
   scholarshipService,
   type IPostScholarshipDTO,
   type IScholarshipQueryParams,
-} from "../services/scholarshipManagementService";
+} from "../services/scholarship-management";
 
 export const scholarshipKeys = {
   all: ["scholarshipsManagement"] as const,

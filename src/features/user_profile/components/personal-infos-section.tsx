@@ -9,7 +9,7 @@ import {
 import { isObjectNull } from "@/utils/functions";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
-import { useGetPersonal } from "../hooks/usePersonalInfo";
+import { useGetPersonal } from "../hooks/use-personal";
 import { formatDate, toCapitalize } from "../utils/functions";
 import type { IPersonalInfoSectionProps } from "../utils/types";
 import { PersonalInfoForm } from "./personal-infos-form";

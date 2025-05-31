@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useGetPersonal } from "@/features/user_profile";
 import { cn } from "@/lib/utils";
 import { ArrowUp, Loader2, PlusIcon, Square } from "lucide-react";
-import { useGetChat, usePostChat } from "../hooks/useChatbot";
+import { useGetChat, usePostChat } from "../hooks/use-chatbot";
 import { ChatMessage } from "./chat-messages";
 import { EmptyState } from "./empty-state";
 
