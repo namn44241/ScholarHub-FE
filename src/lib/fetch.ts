@@ -52,8 +52,8 @@ export const customFetch = async <T = any>(
 
   const headers = new Headers(IfetchOptions.headers);
 
-  // set default content type
-  if (!headers.has("Content-Type")) {
+  // set default content type ONLY if not FormData
+  if (!headers.has("Content-Type") && !(IfetchOptions.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 

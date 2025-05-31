@@ -15,11 +15,15 @@ export interface IPost {
   author: IAuthor;
   content: string;
   image?: string;
+  video?: string;
+  files?: string[];
+  post_type: string;
+  tags: string[];
   timestamp: string;
   reactions: IReactions;
   userReacted: boolean;
-  tags: string[];
-  postType: string;
+  userReposted: boolean;
+  userSaved: boolean;
 }
 
 export interface IComment {
@@ -44,4 +48,5 @@ export interface IPostListProps {
   posts: IPost[]
   onReaction: (postId: string) => void
   loadMorePosts?: () => void
+  onHidePost?: (postId: string) => void
 }

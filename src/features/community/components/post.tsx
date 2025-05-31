@@ -3,27 +3,68 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
-import { Heart, MessageSquare, MoreHorizontal, Repeat, Send } from "lucide-react"
+import { Heart, MessageSquare, MoreHorizontal, Repeat, Send, FileText } from "lucide-react"
 import { useState } from "react"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import CommentSection from "./comment-section"
 import type { IPost } from "../utils/types"
+import { communityApi } from "../services/community-api"
 
 interface IPostProps {
     post: IPost
     onReaction: (postId: string) => void
+    onHidePost?: (postId: string) => void
 }
 
-const Post = ({ post, onReaction }: IPostProps) => {
+const Post = ({ post, onReaction, onHidePost }: IPostProps) => {
     const [showComments, setShowComments] = useState(false)
+    const [isReposting, setIsReposting] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
+
+    const handleRepost = async () => {
+        try {
+            setIsReposting(true)
+            await communityApi.createRepost(post.id)
+            // Reload posts để thấy repost mới
+            window.location.reload()
+        } catch (error) {
+            console.error('Repost error:', error)
+        } finally {
+            setIsReposting(false)
+        }
+    }
+
+    const handleSavePost = async () => {
+        try {
+            setIsSaving(true)
+            await communityApi.toggleSavePost(post.id)
+            // Refresh hoặc update state
+            window.location.reload()
+        } catch (error) {
+            console.error('Save post error:', error)
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    const handleHidePost = () => {
+        if (onHidePost) {
+            onHidePost(post.id)
+        }
+    }
 
     return (
         <Card className="w-full">
             <CardHeader className="flex flex-row items-start space-y-0 pb-3">
                 <div className="flex gap-3">
                     <Avatar className="w-10 h-10">
-                        <AvatarImage src={post.author.avatar || "/placeholder.svg"} alt={post.author.name} />
-                        <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage 
+                            src={post.author.avatar || undefined} 
+                            alt={post.author.name} 
+                        />
+                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                            {post.author.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                         <p className="font-medium text-sm">{post.author.name}</p>
@@ -39,8 +80,12 @@ const Post = ({ post, onReaction }: IPostProps) => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Save post</DropdownMenuItem>
-                            <DropdownMenuItem>Hide post</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleSavePost} disabled={isSaving}>
+                                {post.userSaved ? "Unsave post" : "Save post"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleHidePost}>
+                                Hide post
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Report post</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -48,9 +93,48 @@ const Post = ({ post, onReaction }: IPostProps) => {
             </CardHeader>
             <CardContent className="pb-3">
                 <p className="mb-4 text-sm">{post.content}</p>
+                
+                {/* Render Image */}
                 {post.image && (
-                    <div className="relative rounded-md w-full aspect-video overflow-hidden">
-                        <LazyLoadImage src={post.image || "/placeholder.svg"} alt="Post image" className="object-cover" />
+                    <div className="relative rounded-md w-full aspect-video overflow-hidden mb-3">
+                        <LazyLoadImage 
+                            src={post.image || "/placeholder.svg"} 
+                            alt="Post image" 
+                            className="object-cover w-full h-full" 
+                        />
+                    </div>
+                )}
+
+                {/* Render Video */}
+                {post.video && (
+                    <div className="relative rounded-md w-full aspect-video overflow-hidden mb-3">
+                        <video 
+                            src={post.video} 
+                            controls 
+                            className="w-full h-full object-cover"
+                            preload="metadata"
+                        >
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                )}
+
+                {/* Render Files */}
+                {post.files && post.files.length > 0 && (
+                    <div className="space-y-2 mb-3">
+                        {post.files.map((fileUrl, index) => (
+                            <div key={index} className="flex items-center gap-2 p-2 border rounded">
+                                <FileText className="w-4 h-4" />
+                                <a 
+                                    href={fileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer" 
+                                    className="text-sm flex-1 text-blue-600 hover:underline"
+                                >
+                                    {fileUrl.split('/').pop()}
+                                </a>
+                            </div>
+                        ))}
                     </div>
                 )}
             </CardContent>
@@ -72,8 +156,14 @@ const Post = ({ post, onReaction }: IPostProps) => {
                         <MessageSquare className="w-4 h-4" />
                         <span className="text-xs">Comment</span>
                     </Button>
-                    <Button variant="ghost" size="sm" className="flex-1 gap-2">
-                        <Repeat className="w-4 h-4" />
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="flex-1 gap-2" 
+                        onClick={handleRepost}
+                        disabled={isReposting}
+                    >
+                        <Repeat className={`w-4 h-4 ${post.userReposted ? "text-green-600" : ""}`} />
                         <span className="text-xs">Repost</span>
                     </Button>
                     <Button variant="ghost" size="sm" className="flex-1 gap-2">
