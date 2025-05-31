@@ -38,7 +38,6 @@ interface IPostProps {
 const Post = ({ post, onReaction, onHidePost, isReactionLoading }: IPostProps) => {
   const [showComments, setShowComments] = useState(false);
 
-  // React Query mutations
   const createRepostMutation = useCreateRepost();
   const toggleSavePostMutation = useToggleSavePost();
 

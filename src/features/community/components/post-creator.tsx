@@ -44,7 +44,6 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
           attachments.videos.length > 0 ||
           attachments.files.length > 0) && (
           <div className="space-y-2 mb-3">
-            {/* Image previews */}
             {attachments.images.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {attachments.images.map((url, index) => (
