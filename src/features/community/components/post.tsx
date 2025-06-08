@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { BACKEND_IP } from "@/utils/endpoints";
 import {
   FileText,
   Heart,
@@ -35,7 +36,12 @@ interface IPostProps {
   isReactionLoading?: boolean;
 }
 
-const Post = ({ post, onReaction, onHidePost, isReactionLoading }: IPostProps) => {
+const Post = ({
+  post,
+  onReaction,
+  onHidePost,
+  isReactionLoading,
+}: IPostProps) => {
   const [showComments, setShowComments] = useState(false);
 
   const createRepostMutation = useCreateRepost();
@@ -108,7 +114,6 @@ const Post = ({ post, onReaction, onHidePost, isReactionLoading }: IPostProps) =
               <DropdownMenuItem onClick={handleHidePost}>
                 Hide post
               </DropdownMenuItem>
-              <DropdownMenuItem>Report post</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -120,7 +125,7 @@ const Post = ({ post, onReaction, onHidePost, isReactionLoading }: IPostProps) =
         {post.image && (
           <div className="relative mb-3 rounded-md w-full aspect-video overflow-hidden">
             <LazyLoadImage
-              src={post.image || "/placeholder.svg"}
+              src={`${BACKEND_IP}/${post.image}` || "/placeholder.svg"}
               alt="Post image"
               className="w-full h-full object-cover"
             />
@@ -131,7 +136,7 @@ const Post = ({ post, onReaction, onHidePost, isReactionLoading }: IPostProps) =
         {post.video && (
           <div className="relative mb-3 rounded-md w-full aspect-video overflow-hidden">
             <video
-              src={post.video}
+              src={`${BACKEND_IP}/${post.video}` || "/placeholder.svg"}
               controls
               className="w-full h-full object-cover"
               preload="metadata"

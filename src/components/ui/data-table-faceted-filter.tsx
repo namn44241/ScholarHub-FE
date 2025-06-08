@@ -1,5 +1,3 @@
-"use client"
-
 import type * as React from "react"
 import { Check, PlusCircle } from "lucide-react"
 import type { Column } from "@tanstack/react-table"
@@ -40,25 +38,25 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-9 border-dashed">
-          <PlusCircle className="mr-2 h-4 w-4" />
+        <Button variant="outline" size="sm" className="border-dashed h-9">
+          <PlusCircle className="mr-2 w-4 h-4" />
           {title}
           {selectedValues?.size > 0 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
-              <Badge variant="secondary" className="rounded-sm px-1 font-normal lg:hidden">
+              <Badge variant="secondary" className="lg:hidden px-1 rounded-sm font-normal">
                 {selectedValues.size}
               </Badge>
-              <div className="hidden space-x-1 lg:flex">
+              <div className="hidden lg:flex space-x-1">
                 {selectedValues.size > 2 ? (
-                  <Badge variant="secondary" className="rounded-sm px-1 font-normal">
+                  <Badge variant="secondary" className="px-1 rounded-sm font-normal">
                     {selectedValues.size} selected
                   </Badge>
                 ) : (
                   options
                     .filter((option) => selectedValues.has(option.value))
                     .map((option) => (
-                      <Badge variant="secondary" key={option.value} className="rounded-sm px-1 font-normal">
+                      <Badge variant="secondary" key={option.value} className="px-1 rounded-sm font-normal">
                         {option.label}
                       </Badge>
                     ))
@@ -68,7 +66,7 @@ export function DataTableFacetedFilter<TData, TValue>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="start">
+      <PopoverContent className="p-0 w-[200px]" align="start">
         <Command>
           <CommandInput placeholder={title} />
           <CommandList>
@@ -97,10 +95,10 @@ export function DataTableFacetedFilter<TData, TValue>({
                     >
                       <Check className={cn("h-4 w-4 text-white")} />
                     </div>
-                    {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
+                    {option.icon && <option.icon className="mr-2 w-4 h-4 text-muted-foreground" />}
                     <span>{option.label}</span>
                     {facets?.get(option.value) && (
-                      <span className="ml-auto flex h-4 w-4 items-center justify-center   text-xs">
+                      <span className="flex justify-center items-center ml-auto w-4 h-4 text-xs">
                         {facets.get(option.value)}
                       </span>
                     )}

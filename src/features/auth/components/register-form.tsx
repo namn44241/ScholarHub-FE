@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { useRegisterForm } from "../hooks/useRegisterForm"
+import { useRegisterForm } from "../hooks/use-register-form"
 
 export const RegisterForm = ({
     className,
@@ -29,8 +29,8 @@ export const RegisterForm = ({
                 >
                     <ScholarHubLogo className="text-4xl" />
                 </Link>
-                <p className="text-xl font-bold">Create an account</p>
-                <p className="text-center text-sm text-muted-foreground">
+                <p className="font-bold text-xl">Create an account</p>
+                <p className="text-muted-foreground text-sm text-center">
                     Already have an account?{" "}
                     <Link to="/auth/login" className="underline underline-offset-4">
                         Login
@@ -99,7 +99,7 @@ export const RegisterForm = ({
                     <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <Loader2 className="mr-2 w-4 h-4 animate-spin" />
                                 Signing up...
                             </>
                         ) :
@@ -108,7 +108,7 @@ export const RegisterForm = ({
                 </form>
             </Form>
 
-            <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
+            <div className="text-muted-foreground hover:[&_a]:text-primary text-xs text-center [&_a]:underline [&_a]:underline-offset-4 text-balance">
                 By clicking sign up, you agree to our <Link to="/term-of-service">Terms of Service</Link>{" "}
                 and <Link to="/privacy-policy">Privacy Policy</Link>.
             </div>

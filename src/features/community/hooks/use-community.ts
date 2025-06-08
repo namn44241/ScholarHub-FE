@@ -244,72 +244,75 @@ export const useToggleSavePost = () => {
   return useMutation({
     mutationFn: (postId: string) => communityService.toggleSavePost(postId),
     onMutate: async (postId) => {
-      // Cancel queries
       await queryClient.cancelQueries({ queryKey: communityKeys.postsList() });
       await queryClient.cancelQueries({ queryKey: communityKeys.savedPosts() });
 
-      // Snapshot previous values
-      const previousPosts = queryClient.getQueryData(communityKeys.postsList());
-      const previousSavedPosts = queryClient.getQueryData(
-        communityKeys.savedPosts()
-      );
-      const previousSavedCount = queryClient.getQueryData([
-        ...communityKeys.savedPosts(),
-        "count",
-      ]);
+      const queryCache = queryClient.getQueryCache();
+      const postsQueries = queryCache.findAll({ queryKey: communityKeys.postsList() });
+      const savedQueries = queryCache.findAll({ queryKey: communityKeys.savedPosts() });
 
-      // Helper function to toggle save status
+      const previousData = new Map();
+      
       const toggleSaveStatus = (posts: IPost[] = []) =>
         posts.map((post) =>
           post.id === postId ? { ...post, userSaved: !post.userSaved } : post
         );
 
-      // Optimistically update posts
-      queryClient.setQueryData(communityKeys.postsList(), toggleSaveStatus);
-      queryClient.setQueryData(communityKeys.savedPosts(), toggleSaveStatus);
+      postsQueries.forEach((query) => {
+        const data = query.state.data as IPost[];
+        if (data) {
+          previousData.set(query.queryKey, data);
+          queryClient.setQueryData(query.queryKey, toggleSaveStatus(data));
+        }
+      });
 
-      // Update saved posts count
-      const currentPost = ((previousPosts as IPost[]) || []).find(
-        (p) => p.id === postId
-      );
-      if (currentPost && typeof previousSavedCount === "number") {
-        const newCount = currentPost.userSaved
-          ? previousSavedCount - 1
-          : previousSavedCount + 1;
-        queryClient.setQueryData(
-          [...communityKeys.savedPosts(), "count"],
-          newCount
-        );
+      savedQueries.forEach((query) => {
+        const data = query.state.data as IPost[];
+        if (data) {
+          previousData.set(query.queryKey, data);
+          queryClient.setQueryData(query.queryKey, toggleSaveStatus(data));
+        }
+      });
+
+      const savedCountKey = [...communityKeys.savedPosts(), "count"];
+      const previousSavedCount = queryClient.getQueryData(savedCountKey);
+      
+      if (typeof previousSavedCount === "number") {
+        let currentPost: IPost | undefined;
+        for (const query of postsQueries) {
+          const data = query.state.data as IPost[];
+          if (data) {
+            currentPost = data.find(p => p.id === postId);
+            if (currentPost) break;
+          }
+        }
+
+        if (currentPost) {
+          const newCount = currentPost.userSaved
+            ? previousSavedCount - 1
+            : previousSavedCount + 1;
+          queryClient.setQueryData(savedCountKey, newCount);
+          previousData.set(savedCountKey, previousSavedCount);
+        }
       }
 
-      return { previousPosts, previousSavedPosts, previousSavedCount };
+      return { previousData };
     },
     onError: (_error, _variables, context) => {
-      // Revert optimistic updates
-      if (context?.previousPosts) {
-        queryClient.setQueryData(
-          communityKeys.postsList(),
-          context.previousPosts
-        );
-      }
-      if (context?.previousSavedPosts) {
-        queryClient.setQueryData(
-          communityKeys.savedPosts(),
-          context.previousSavedPosts
-        );
-      }
-      if (context?.previousSavedCount !== undefined) {
-        queryClient.setQueryData(
-          [...communityKeys.savedPosts(), "count"],
-          context.previousSavedCount
-        );
+      if (context?.previousData) {
+        context.previousData.forEach((data, queryKey) => {
+          queryClient.setQueryData(queryKey, data);
+        });
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: communityKeys.postsList() });
-      queryClient.invalidateQueries({ queryKey: communityKeys.savedPosts() });
-      queryClient.invalidateQueries({
-        queryKey: [...communityKeys.savedPosts(), "count"],
+      queryClient.invalidateQueries({ 
+        queryKey: communityKeys.postsList(),
+        exact: false 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: communityKeys.savedPosts(),
+        exact: false
       });
     },
   });

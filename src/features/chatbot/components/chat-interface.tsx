@@ -1,198 +1,192 @@
-import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import type React from "react"
 
-import { Button } from "@/components/ui/button";
-import { useGetPersonal } from "@/features/user_profile";
-import { cn } from "@/lib/utils";
-import { ArrowUp, Loader2, PlusIcon, Square } from "lucide-react";
-import { useGetChat, usePostChat } from "../hooks/use-chatbot";
-import { ChatMessage } from "./chat-messages";
-import { EmptyState } from "./empty-state";
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
+import { useGetPersonal } from "@/features/user_profile"
+import { ArrowUp, Loader2, Square, Sparkles } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { useGetChat, usePostChat } from "../hooks/use-chatbot"
+import { ChatMessage } from "./chat-messages"
 
 interface IChatInterfaceProps {
-  userId: string;
-  threadId?: string;
-  onNewThread: () => void;
-  hasThreads: boolean;
+  userId: string
+  threadId?: string
+  onNewThread: () => void
+  hasThreads: boolean
 }
 
-export function ChatInterface({
-  userId,
-  threadId,
-  onNewThread,
-  hasThreads,
-}: IChatInterfaceProps) {
-  const { data: personalData } = useGetPersonal();
-  const [message, setMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: IChatInterfaceProps) {
+  const { data: personalData } = useGetPersonal() 
+  const [message, setMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const { data: messages, isLoading: isLoadingChat } = useGetChat({
     user_id: userId,
     thread_id: threadId || "",
-  });
+  })
 
-  const { mutateAsync: postChat } = usePostChat();
+  const { mutateAsync: postChat } = usePostChat()
 
-  // auto-scroll messsages
+  // Auto-scroll messages
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  }, [messages]);
+  }, [messages])
 
   const handleSubmit = async (e?: React.FormEvent) => {
-    e?.preventDefault();
+    e?.preventDefault()
 
-    if (!message.trim() || !threadId || !userId || isSubmitting) return;
+    if (!message.trim() || !threadId || !userId || isSubmitting) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
 
     try {
       await postChat({
         user_id: userId,
         thread_id: threadId,
         question: message.trim(),
-      });
+      })
 
-      setMessage("");
+      setMessage("")
 
       setTimeout(() => {
         if (textareaRef.current) {
-          textareaRef.current.focus();
-          textareaRef.current.style.height = "auto";
+          textareaRef.current.focus()
+          textareaRef.current.style.height = "auto"
         }
-      }, 100);
+      }, 100)
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.error("Failed to send message:", error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
+      e.preventDefault()
+      handleSubmit()
     }
-  };
+  }
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
+    setMessage(e.target.value)
 
-    e.target.style.height = "auto";
-
-    const newHeight = Math.min(e.target.scrollHeight, 200);
-    e.target.style.height = `${newHeight}px`;
-  };
+    e.target.style.height = "auto"
+    const newHeight = Math.min(e.target.scrollHeight, 200)
+    e.target.style.height = `${newHeight}px`
+  }
 
   if (!threadId) {
     return (
-      <EmptyState
-        title={
-          hasThreads
-            ? "Select a conversation"
-            : `Hello ${personalData?.last_name}`
-        }
-        description={
-          hasThreads
-            ? "Choose an existing conversation from the sidebar or start a new one."
-            : "Start your first conversation with ScholarHub's AI assistant."
-        }
-        action={
-          <Button onClick={onNewThread}>
-            <PlusIcon className="mr-2 w-4 h-4" />
-            New Conversation
-          </Button>
-        }
-      />
-    );
+      <div className="flex flex-col h-full">
+        <div className="flex flex-1 justify-center items-center p-8">
+          <div className="max-w-md text-center">
+            <div className="bg-primary/10 mx-auto mb-6 p-6 rounded-full w-fit">
+              <Sparkles className="w-12 h-12 text-primary" />
+            </div>
+
+            <h2 className="mb-3 font-semibold text-2xl">
+              {hasThreads ? "Select a conversation" : `Welcome, ${personalData?.last_name || "Scholar"}!`}
+            </h2>
+
+            <p className="mb-6 text-muted-foreground leading-relaxed">
+              {hasThreads
+                ? "Choose an existing conversation from the sidebar or start a new one."
+                : "Get scholarship information and application guidance with ScholarHub's AI assistant."}
+            </p>
+
+            <Button onClick={onNewThread} size="lg" className="gap-2">
+              <Sparkles className="w-4 h-4" />
+              Start new conversation
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const sortedMessages = messages
-    ? [...messages].sort(
-        (a, b) =>
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      )
-    : [];
+    ? [...messages].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    : []
 
   return (
     <div className="flex flex-col h-full">
-      {/* Chat Messages */}
-      <div
-        ref={chatContainerRef}
-        className="flex-1 space-y-6 p-4 md:p-6 overflow-y-auto"
-      >
-        {isLoadingChat ? (
-          <div className="flex justify-center items-center h-full">
-            <Loader2 className="size-8 text-primary animate-spin" />
-          </div>
-        ) : !sortedMessages?.length ? (
-          <div className="flex flex-col justify-center items-center p-4 h-full text-center">
-            <h3 className="font-medium text-lg">New Conversation</h3>
-            <p className="mt-2 text-muted-foreground">
-              Send a message to start chatting with ScholarHub's AI assistant.
-            </p>
-          </div>
-        ) : (
-          <>
-            {sortedMessages.map((msg, index) => (
-              <ChatMessage key={`${threadId}-${index}`} message={msg} />
-            ))}
-            <div ref={messagesEndRef} />
-          </>
-        )}
+      {/* Messages Area */}
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-full">
+          {isLoadingChat ? (
+            <div className="flex justify-center items-center h-full">
+              <div className="flex flex-col items-center">
+                <Loader2 className="mb-2 w-8 h-8 text-primary animate-spin" />
+                <p className="text-muted-foreground text-sm">Loading messages...</p>
+              </div>
+            </div>
+          ) : !sortedMessages?.length ? (
+            <div className="flex justify-center items-center p-8 h-full">
+              <div className="text-center">
+                <div className="bg-primary/10 mx-auto mb-4 p-6 rounded-full w-fit">
+                  <Sparkles className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="mb-2 font-medium text-lg">How can I help you today?</h3>
+                <p className="max-w-md text-muted-foreground text-sm">
+                  Ask me about scholarships, application processes, or any academic guidance you need.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4">
+              <div className="space-y-6 mx-auto max-w-4xl">
+                {sortedMessages.map((msg, index) => (
+                  <ChatMessage key={`${threadId}-${index}`} message={msg} />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+          )}
+        </ScrollArea>
       </div>
 
-      {/* Message Input */}
-      <div className="p-4 border-t border-border">
-        <form onSubmit={handleSubmit} className="relative flex w-full">
-          <div className="relative flex items-center space-x-2 w-full">
-            <div className="relative flex-1">
-              <textarea
-                ref={textareaRef}
-                value={message}
-                onChange={handleTextareaChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask AI..."
-                className={cn(
-                  "z-10 w-full grow resize-none rounded-xl border border-input bg-background p-3 pr-24 text-sm ring-offset-background transition-[border] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                )}
-                disabled={isSubmitting}
-                aria-label="Write your message here"
-              />
+      {/* Input Area */}
+      <div className="p-4 border-t">
+        <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
+          <div className="relative">
+            <textarea
+              ref={textareaRef}
+              value={message}
+              onChange={handleTextareaChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about scholarships, applications, or academic guidance..."
+              className={cn(
+                "w-full resize-none rounded-lg border border-input bg-background px-4 py-3 pr-12 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                "min-h-[52px] max-h-[200px]",
+              )}
+              disabled={isSubmitting}
+              rows={1}
+            />
+
+            <div className="right-2 bottom-2 absolute">
+              {isSubmitting ? (
+                <Button type="button" size="icon" variant="ghost" className="w-8 h-8">
+                  <Square className="w-4 h-4" />
+                </Button>
+              ) : (
+                <Button type="submit" size="icon" className="w-8 h-8" disabled={!message.trim()}>
+                  <ArrowUp className="w-4 h-4" />
+                </Button>
+              )}
             </div>
           </div>
 
-          <div className="top-4 right-3 z-20 absolute flex gap-2">
-            {isSubmitting ? (
-              <Button
-                type="button"
-                size="icon"
-                className="size-8"
-                aria-label="Stop generating"
-                onClick={() => {
-                  // stop
-                }}
-              >
-                <Square className="w-3 h-3 animate-pulse" fill="currentColor" />
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                size="icon"
-                className="size-8 transition-opacity"
-                aria-label="Send message"
-                disabled={!message.trim()}
-              >
-                <ArrowUp className="w-5 h-5" />
-              </Button>
-            )}
+          <div className="mt-2 text-muted-foreground text-xs text-center">
+            Press Enter to send • Shift + Enter for new line
           </div>
         </form>
       </div>
     </div>
-  );
+  )
 }

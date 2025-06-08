@@ -3,7 +3,7 @@ import {
   useLogin,
   useLogout,
   useRegister,
-} from "@/hooks/use-auth-mutations";
+} from "@/features/auth";
 import { authTokenManagement } from "@/lib/utils";
 import type {
   IAuthContextType,

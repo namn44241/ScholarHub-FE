@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import type { IUser } from "./User";
-import type { IUserResponse } from "@/services/auth-service";
+import type { IUserResponse } from "@/features/auth/services/auth-service";
 
 export interface IAuthContextType {
   user: IUser | null;

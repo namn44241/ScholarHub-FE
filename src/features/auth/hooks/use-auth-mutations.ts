@@ -1,4 +1,4 @@
-import { authService } from "@/services/auth-service";
+import { authService } from "@/features/auth/services/auth-service";
 import type { IUser } from "@/types/user";
 import { GC_TIME, STALE_TIME } from "@/utils/constants";
 import { getErrorMessage } from "@/utils/functions";
@@ -51,16 +51,14 @@ export const useLogin = (
       authService.login(credentials.email, credentials.password),
     onSuccess: async () => {
       setError(null);
-      try {
-        const userResponse = await authService.getCurrentUser();
-        if (userResponse.success) {
-          saveUserData(userResponse.payload.user, setUser);
-        }
-      } catch (err) {
-        console.error("Error fetching user data after login:", err);
+      const userResponse = await authService.getCurrentUser();
+      if (userResponse.success) {
+        saveUserData(userResponse.payload.user, setUser);
+        toast.success("Login successful");
+      } else {
+        //@ts-ignore
+        toast.error(userResponse.detail);
       }
-      toast.success("Login successful");
-      return { success: true };
     },
     onError: (err: any) => {
       setError(getErrorMessage(err) || "Login failed");

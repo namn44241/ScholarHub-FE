@@ -1,5 +1,3 @@
-"use client"
-
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -21,8 +19,8 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="ml-auto h-9 lg:flex">
-          <SlidersHorizontal className="mr-2 h-4 w-4" />
+        <Button variant="outline" size="sm" className="lg:flex ml-auto h-9">
+          <SlidersHorizontal className="mr-2 w-4 h-4" />
           View
         </Button>
       </DropdownMenuTrigger>
