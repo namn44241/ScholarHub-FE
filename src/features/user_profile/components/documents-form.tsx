@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import { DialogFooter } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
 import {
   FileUpload,
   FileUploadDropzone,
@@ -9,24 +9,38 @@ import {
   FileUploadItemPreview,
   FileUploadList,
   FileUploadTrigger,
-} from "@/components/ui/file-upload"
-import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { Save, Trash2, Upload } from "lucide-react"
-import { useCallback } from "react"
-import { toast } from "sonner"
-import { useDocumentForm } from "../hooks/use-document"
-import type { IDocumentFormProps } from "../utils/types"
+} from "@/components/ui/file-upload";
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Loader2, Save, Trash2, Upload } from "lucide-react";
+import { useCallback } from "react";
+import { toast } from "sonner";
+import { useDocumentForm } from "../hooks/use-document";
+import type { IDocument } from "../utils/types";
 
-const DocumentForm = ({ onSubmit, onCancel }: IDocumentFormProps) => {
-  const { form, documentFiles, handleDocumentFileChange, resetForm, submitForm } = useDocumentForm(
+export interface IDocumentFormProps {
+  onSubmit: (values: IDocument) => void;
+  isLoading?: boolean;
+  onCancel: () => void;
+}
+
+const DocumentForm = ({ onSubmit, isLoading, onCancel }: IDocumentFormProps) => {
+  const {
+    form,
+    documentFiles,
+    handleDocumentFileChange,
+    resetForm,
+    submitForm,
+  } = useDocumentForm(
     //@ts-ignore
     onSubmit,
-    onCancel,
-  )
+    onCancel
+  );
 
   const onFileReject = useCallback((file: File, message: string) => {
     toast.error(message, {
-      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
+      description: `"${
+        file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name
+      }" has been rejected`,
     });
   }, []);
 
@@ -52,8 +66,12 @@ const DocumentForm = ({ onSubmit, onCancel }: IDocumentFormProps) => {
                     <div className="flex justify-center items-center p-2.5 border rounded-full">
                       <Upload className="size-6 text-muted-foreground" />
                     </div>
-                    <p className="font-medium text-sm">Drag & drop files here</p>
-                    <p className="text-muted-foreground text-xs">PDF or DOCX (max 10MB)</p>
+                    <p className="font-medium text-sm">
+                      Drag & drop files here
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      PDF or DOCX (max 10MB)
+                    </p>
                   </div>
                   <FileUploadTrigger asChild>
                     <Button variant="outline" size="sm" className="mt-2 w-fit">
@@ -85,13 +103,22 @@ const DocumentForm = ({ onSubmit, onCancel }: IDocumentFormProps) => {
             Cancel
           </Button>
           <Button type="submit" size="sm">
-            <Save className="mr-1 size-4" />
-            Save
+            {isLoading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="size-4" />
+                Save
+              </>
+            )}
           </Button>
         </DialogFooter>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default DocumentForm
+export default DocumentForm;

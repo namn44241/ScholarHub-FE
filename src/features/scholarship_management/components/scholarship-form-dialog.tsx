@@ -292,7 +292,7 @@ export const ScholarshipFormDialog = ({
                                                                             disabled={isReadOnly}
                                                                         >
                                                                             {field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
-                                                                            <CalendarIcon className="opacity-50 ml-auto w-4 h-4" />
+                                                                            <CalendarIcon className="opacity-50 ml-auto size-4" />
                                                                         </Button>
                                                                     </FormControl>
                                                                 </PopoverTrigger>

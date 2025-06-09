@@ -162,7 +162,7 @@ export function DataTableToolbar<TData>({
         {isFiltered && (
           <Button variant="ghost" onClick={handleResetFilters} className="px-2 lg:px-3 h-9">
             Reset
-            <X className="ml-2 w-4 h-4" />
+            <X className="ml-2 size-4" />
           </Button>
         )}
       </div>

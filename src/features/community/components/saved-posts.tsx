@@ -49,7 +49,7 @@ const SavedPosts = () => {
               onClick={() => navigate({ to: "/community" })}
               className="mr-3"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="size-4" />
             </Button>
             <CardTitle className="flex items-center gap-2">
               <Bookmark className="w-5 h-5" />
@@ -96,7 +96,7 @@ const SavedPosts = () => {
             onClick={() => navigate({ to: "/community" })}
             className="mr-3"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="size-4" />
           </Button>
           <CardTitle className="flex items-center gap-2">
             <Bookmark className="w-5 h-5" />
@@ -108,7 +108,7 @@ const SavedPosts = () => {
       {savedPosts.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <Bookmark className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
+            <Bookmark className="mx-auto mb-4 size-12 text-muted-foreground" />
             <p className="text-muted-foreground">
               Chưa có bài viết nào được lưu
             </p>

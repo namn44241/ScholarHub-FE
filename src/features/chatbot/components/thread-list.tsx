@@ -90,7 +90,7 @@ export function ThreadList({
               onClick={() => onSelectThread(thread.thread_id)}
             >
               <div className="flex items-start gap-3">
-                <MessageSquare className="mt-0.5 w-4 h-4 text-muted-foreground shrink-0" />
+                <MessageSquare className="mt-0.5 size-4 text-muted-foreground shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="mb-1 font-medium text-sm truncate">
                     {thread.latest_question || "New Conversation"}

@@ -27,7 +27,7 @@ export function ChatMessage({ message }: IChatMessageProps) {
           </div>
           <Avatar className="bg-primary/10 w-8 h-8">
             <AvatarFallback className="bg-primary/10 text-primary">
-              <User className="w-4 h-4" />
+              <User className="size-4" />
             </AvatarFallback>
           </Avatar>
         </div>
@@ -37,7 +37,7 @@ export function ChatMessage({ message }: IChatMessageProps) {
         <div className="flex items-start gap-3">
           <Avatar className="w-8 h-8">
             <AvatarFallback className="bg-primary/10">
-              <Bot className="w-4 h-4 text-primary" />
+              <Bot className="size-4 text-primary" />
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-2">

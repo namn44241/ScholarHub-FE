@@ -43,7 +43,7 @@ export const certificationService = {
     const response = await apiClient.delete(
       `${USER_PROFILE_ENDPOINTS.CERTIFICATION}`,
       {
-        data: { id },
+        id,
       }
     );
     return response as ICertificationResponse;

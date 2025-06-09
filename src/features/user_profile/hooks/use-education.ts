@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   educationService,
   type IEducationDTO,
-} from "../services/educationService";
+} from "../services/education-service";
 import type { IEducation } from "../utils/types";
 
 export const educationKeys = {

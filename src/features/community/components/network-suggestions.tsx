@@ -37,7 +37,7 @@ export const NetworkSuggestions = () => {
           <div className="space-y-4 animate-pulse">
             {[1,2,3].map(i => (
               <div key={i} className="flex gap-3">
-                <div className="bg-gray-200 rounded-full w-12 h-12"></div>
+                <div className="bg-gray-200 rounded-full size-12"></div>
                 <div className="flex-1">
                   <div className="bg-gray-200 mb-2 rounded w-3/4 h-4"></div>
                   <div className="bg-gray-200 rounded w-1/2 h-3"></div>

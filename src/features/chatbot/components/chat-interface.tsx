@@ -87,7 +87,7 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
         <div className="flex flex-1 justify-center items-center p-8">
           <div className="max-w-md text-center">
             <div className="bg-primary/10 mx-auto mb-6 p-6 rounded-full w-fit">
-              <Sparkles className="w-12 h-12 text-primary" />
+              <Sparkles className="size-12 text-primary" />
             </div>
 
             <h2 className="mb-3 font-semibold text-2xl">
@@ -101,7 +101,7 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
             </p>
 
             <Button onClick={onNewThread} size="lg" className="gap-2">
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="size-4" />
               Start new conversation
             </Button>
           </div>
@@ -172,11 +172,11 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
             <div className="right-2 bottom-2 absolute">
               {isSubmitting ? (
                 <Button type="button" size="icon" variant="ghost" className="w-8 h-8">
-                  <Square className="w-4 h-4" />
+                  <Square className="size-4" />
                 </Button>
               ) : (
                 <Button type="submit" size="icon" className="w-8 h-8" disabled={!message.trim()}>
-                  <ArrowUp className="w-4 h-4" />
+                  <ArrowUp className="size-4" />
                 </Button>
               )}
             </div>

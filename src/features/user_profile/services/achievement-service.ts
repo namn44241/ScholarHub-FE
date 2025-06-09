@@ -41,7 +41,7 @@ export const achievementService = {
     const response = await apiClient.delete(
       `${USER_PROFILE_ENDPOINTS.ACHIEVEMENT}`,
       {
-        data: { id },
+       id,
       }
     );
     return response as IAchievementResponse;

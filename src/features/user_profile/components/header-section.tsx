@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SITE_CONFIG } from "@/configs/site";
 import { useLocation } from "@tanstack/react-router";
 import {
@@ -33,13 +34,17 @@ export const ProfileHeader = ({
 }: IProfileHeaderProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const location = useLocation();
-  const { data } = useGetPersonal();
+  const { data, isLoading } = useGetPersonal();
 
   const fullName = data?.first_name
     ? `${data.first_name}${data.middle_name ? ` ${data.middle_name}` : ""} ${
         data.last_name
       }`
     : "User";
+
+  if (isLoading) {
+    return <ProfileHeaderSkeleton isCurrentUser={isCurrentUser || false} />;
+  }
 
   return (
     <Card className="pt-0 w-full">
@@ -68,7 +73,7 @@ export const ProfileHeader = ({
                 variant={isFollowing ? "outline" : "default"}
                 onClick={() => setIsFollowing(!isFollowing)}
               >
-                <Heart className="mr-1 size-4" />
+                <Heart className="size-4" />
                 {isFollowing ? "Following" : "Follow"}
               </Button>
             )}
@@ -148,6 +153,61 @@ export const ProfileHeader = ({
                     </span>
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const ProfileHeaderSkeleton = ({
+  isCurrentUser,
+}: {
+  isCurrentUser: boolean;
+}) => {
+  return (
+    <Card className="pt-0 w-full">
+      <div className="relative w-full h-48 overflow-hidden">
+        <Skeleton className="absolute inset-0 rounded-t-xl w-full h-full" />
+      </div>
+
+      <CardContent>
+        <div className="relative">
+          <div className="-top-16 left-4 sm:left-6 absolute rounded-full ring-4 ring-background">
+            <Skeleton className="rounded-full size-32" />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-4">
+            {!isCurrentUser && <Skeleton className="w-24 h-10" />}
+            {isCurrentUser && <Skeleton className="w-10 h-10" />}
+            <Skeleton className="w-10 h-10" />
+          </div>
+
+          <div className="mt-6">
+            <div className="flex md:flex-row flex-col md:justify-between md:items-start gap-4">
+              <div className="space-y-2">
+                <Skeleton className="w-48 h-8" />
+                <div className="flex sm:flex-row flex-col sm:items-center gap-1 sm:gap-3">
+                  <Skeleton className="w-32 h-6" />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end space-y-3 md:text-right">
+                <div className="flex gap-4 text-sm">
+                  <div>
+                    <Skeleton className="w-20 h-4" />
+                  </div>
+                  <div>
+                    <Skeleton className="w-20 h-4" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Skeleton className="size-4" />
+                  <Skeleton className="w-32 h-4" />
+                </div>
               </div>
             </div>
           </div>

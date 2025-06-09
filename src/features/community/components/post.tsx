@@ -99,7 +99,7 @@ const Post = ({
                 size="icon"
                 className="rounded-full w-8 h-8"
               >
-                <MoreHorizontal className="w-4 h-4" />
+                <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -154,7 +154,7 @@ const Post = ({
                 key={index}
                 className="flex items-center gap-2 p-2 border rounded"
               >
-                <FileText className="w-4 h-4" />
+                <FileText className="size-4" />
                 <a
                   href={fileUrl}
                   target="_blank"
@@ -186,7 +186,7 @@ const Post = ({
             disabled={isReactionLoading}
           >
             {isReactionLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
               <Heart
                 className={`h-4 w-4 ${
@@ -202,7 +202,7 @@ const Post = ({
             className="flex-1 gap-2"
             onClick={() => setShowComments(!showComments)}
           >
-            <MessageSquare className="w-4 h-4" />
+            <MessageSquare className="size-4" />
             <span className="text-xs">Comment</span>
           </Button>
           <Button
@@ -213,10 +213,10 @@ const Post = ({
             disabled={isReposting}
           >
             {isReposting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
               <Repeat
-                className={`w-4 h-4 ${
+                className={`size-4 ${
                   post.userReposted ? "text-green-600" : ""
                 }`}
               />
@@ -224,7 +224,7 @@ const Post = ({
             <span className="text-xs">Repost</span>
           </Button>
           <Button variant="ghost" size="sm" className="flex-1 gap-2">
-            <Send className="w-4 h-4" />
+            <Send className="size-4" />
             <span className="text-xs">Send</span>
           </Button>
         </div>

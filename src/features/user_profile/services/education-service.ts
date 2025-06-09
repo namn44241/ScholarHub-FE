@@ -39,7 +39,7 @@ export const educationService = {
     const response = await apiClient.delete(
       `${USER_PROFILE_ENDPOINTS.EDUCATION}`,
       {
-        data: { id },
+        id,
       }
     );
     return response as IEducationResponse;

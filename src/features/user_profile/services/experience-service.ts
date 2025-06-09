@@ -39,7 +39,7 @@ export const experienceService = {
     const response = await apiClient.delete(
       `${USER_PROFILE_ENDPOINTS.EXPERIENCE}`,
       {
-        data: { id },
+        id,
       }
     );
     return response as IExperienceResponse;

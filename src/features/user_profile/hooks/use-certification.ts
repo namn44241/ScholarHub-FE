@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   certificationService,
   type ICertificationDTO,
-} from "../services/certificationService";
+} from "../services/certification-service";
 import type { ICertification } from "../utils/types";
 
 export const certificationKeys = {

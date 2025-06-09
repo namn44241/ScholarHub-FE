@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   experienceService,
   type IExperienceDTO,
-} from "../services/experienceService";
+} from "../services/experience-service";
 import type { IExperience } from "../utils/types";
 
 export const experienceKeys = {

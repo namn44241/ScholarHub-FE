@@ -124,20 +124,9 @@ export interface IDocumentsSectionProps {
   isCurrentUser?: boolean;
 }
 
-export interface IDocumentFormProps {
-  onSubmit: (values: IDocument) => void;
-  onCancel: () => void;
-}
-
 export interface IPersonalInfoSectionProps {
   personalInfo?: IPersonalInfo;
   isCurrentUser?: boolean;
-}
-
-export interface IPersonalInfoFormProps {
-  initialData?: IPersonalInfo;
-  onCancel: () => void;
-  onSuccess: () => void;
 }
 
 export interface IEducationSectionProps {

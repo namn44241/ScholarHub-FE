@@ -40,7 +40,7 @@ const CommentSection = ({ postId }: ICommentSectionProps) => {
     return (
       <div className="space-y-4 mt-2 pt-3 border-muted-foreground/10 border-t">
         <div className="flex justify-center items-center py-4">
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader2 className="size-4 animate-spin" />
           <span className="ml-2 text-muted-foreground text-sm">
             Loading comments...
           </span>

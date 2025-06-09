@@ -27,11 +27,16 @@ import {
   formatDateFromISO,
   validateDateFormat,
 } from "@/utils/functions";
-import { useState } from "react";
+import { Loader2, Save } from "lucide-react";
 import { usePutPersonal } from "../hooks/use-personal";
 import { GENDER_TYPE } from "../utils/constants";
-import type { IPersonalInfoFormProps } from "../utils/types";
+import type { IPersonalInfo } from "../utils/types";
 
+export interface IPersonalInfoFormProps {
+  initialData?: IPersonalInfo;
+  onCancel: () => void;
+  onSuccess: () => void;
+}
 const personalFormSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   middle_name: z.string().optional(),
@@ -57,8 +62,8 @@ export function PersonalInfoForm({
   onCancel,
   onSuccess,
 }: IPersonalInfoFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { mutateAsync: updatePersonal } = usePutPersonal();
+  const { mutateAsync: updatePersonal, isPending: isLoading } =
+    usePutPersonal();
 
   const defaultValues: Partial<PersonalFormValues> = {
     first_name: initialData?.first_name || "",
@@ -82,8 +87,6 @@ export function PersonalInfoForm({
 
   async function onSubmit(data: PersonalFormValues) {
     try {
-      setIsSubmitting(true);
-
       //@ts-ignore
       const formattedData: IPersonalInfo = {
         ...data,
@@ -96,8 +99,6 @@ export function PersonalInfoForm({
       onSuccess();
     } catch (error) {
       console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -288,8 +289,18 @@ export function PersonalInfoForm({
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Updating..." : "Update"}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="size-4" />
+                Save
+              </>
+            )}
           </Button>
         </div>
       </form>

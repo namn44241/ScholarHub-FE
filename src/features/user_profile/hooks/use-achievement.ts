@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   achievementService,
   type IAchievementDTO,
-} from "../services/achievementService";
+} from "../services/achievement-service";
 import type { IAchievement } from "../utils/types";
 
 export const achievementKeys = {

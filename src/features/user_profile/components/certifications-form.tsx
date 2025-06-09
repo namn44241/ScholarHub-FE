@@ -1,6 +1,11 @@
-import { DefaultDateInput } from "@/components/common/date-typer"
-import { Button } from "@/components/ui/button"
-import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DefaultDateInput } from "@/components/common/date-typer";
+import { Button } from "@/components/ui/button";
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   FileUpload,
   FileUploadDropzone,
@@ -10,19 +15,37 @@ import {
   FileUploadItemPreview,
   FileUploadList,
   FileUploadTrigger,
-} from "@/components/ui/file-upload"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { convertToISODate, formatDateFromISO, validateDateFormat } from "@/utils/functions"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Save, Trash2, Upload } from "lucide-react"
-import { useCallback, useState } from "react"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
-import { CERTIFICATION_TYPE } from "../utils/constants"
+} from "@/components/ui/file-upload";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  convertToISODate,
+  formatDateFromISO,
+  validateDateFormat,
+} from "@/utils/functions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Save, Trash2, Upload } from "lucide-react";
+import { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+import { CERTIFICATION_TYPE } from "../utils/constants";
+import type { ICertification } from "../utils/types";
 
 export const certificationSchema = z.object({
   name: z.string().min(1, "Certification title is required"),
@@ -42,29 +65,26 @@ export const certificationSchema = z.object({
     }),
   image_path: z.string().optional(),
   url: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
-})
+});
 
-export type CertificationFormValues = z.infer<typeof certificationSchema>
-
-export interface ICertification {
-  id: string;
-  name?: string;
-  type: CERTIFICATION_TYPE;
-  provider?: string;
-  certification_date?: string;
-  expiry_date?: string;
-  image_path?: string;
-  url?: string;
-}
+export type CertificationFormValues = z.infer<typeof certificationSchema>;
 
 interface CertificationFormProps {
-  initialValues?: ICertification | null
-  onSubmit: (values: CertificationFormValues) => void
-  onCancel: () => void
+  initialValues?: ICertification | null;
+  isLoading?: boolean;
+  onSubmit: (values: CertificationFormValues) => void;
+  onCancel: () => void;
 }
 
-const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationFormProps) => {
-  const [certificationFiles, setCertificationFiles] = useState<File[] | undefined>(undefined)
+const CertificationForm = ({
+  initialValues,
+  isLoading,
+  onSubmit,
+  onCancel,
+}: CertificationFormProps) => {
+  const [certificationFiles, setCertificationFiles] = useState<
+    File[] | undefined
+  >(undefined);
 
   const form = useForm<CertificationFormValues>({
     resolver: zodResolver(certificationSchema),
@@ -73,8 +93,12 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
           name: initialValues.name || "",
           type: initialValues.type || CERTIFICATION_TYPE.OTHER,
           provider: initialValues.provider || "",
-          certification_date: initialValues.certification_date ? formatDateFromISO(initialValues.certification_date) : undefined,
-          expiry_date: initialValues.expiry_date ? formatDateFromISO(initialValues.expiry_date) : undefined,
+          certification_date: initialValues.certification_date
+            ? formatDateFromISO(initialValues.certification_date)
+            : undefined,
+          expiry_date: initialValues.expiry_date
+            ? formatDateFromISO(initialValues.expiry_date)
+            : undefined,
           image_path: initialValues.image_path || "",
           url: initialValues.url || "",
         }
@@ -87,57 +111,67 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
           image_path: "",
           url: "",
         },
-  })
+  });
 
-  const isEditing = !!initialValues?.id
+  const isEditing = !!initialValues?.id;
 
   const handleFileChange = useCallback(
     (files: File[]) => {
-      setCertificationFiles(files)
+      setCertificationFiles(files);
       if (files.length > 0) {
-        const file = files[0]
-        form.setValue("image_path", URL.createObjectURL(file))
+        const file = files[0];
+        form.setValue("image_path", URL.createObjectURL(file));
       } else {
-        form.setValue("image_path", "")
+        form.setValue("image_path", "");
       }
     },
-    [form],
-  )
+    [form]
+  );
 
   const onFileReject = useCallback((file: File, message: string) => {
     toast.error(message, {
-      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
-    })
-  }, [])
+      description: `"${
+        file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name
+      }" has been rejected`,
+    });
+  }, []);
 
   const handleSubmit = (data: CertificationFormValues) => {
     // Convert DD/MM/YYYY dates to ISO format before submitting
     const formattedData = {
       ...data,
-      certification_date: data.certification_date ? convertToISODate(data.certification_date)?.toString() : undefined,
-      expiry_date: data.expiry_date ? convertToISODate(data.expiry_date)?.toString() : undefined,
-    }
+      certification_date: data.certification_date
+        ? convertToISODate(data.certification_date)?.toString()
+        : undefined,
+      expiry_date: data.expiry_date
+        ? convertToISODate(data.expiry_date)?.toString()
+        : undefined,
+    };
 
-    onSubmit(formattedData as CertificationFormValues)
-  }
+    onSubmit(formattedData as CertificationFormValues);
+  };
 
   const getPlaceholderByType = (type: string) => {
     switch (type) {
       case CERTIFICATION_TYPE.LANGUAGE:
-        return "e.g. IELTS Academic"
+        return "IELTS Academic";
       case CERTIFICATION_TYPE.STANDARDIZED_TEST:
-        return "e.g. SAT Score Report"
+        return "SAT Score Report";
       default:
-        return "e.g. AWS Certified Solutions Architect"
+        return "AWS Certified Solutions Architect";
     }
-  }
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Certification" : "Add Certification"}</DialogTitle>
-          <DialogDescription>Enter the details of your certification</DialogDescription>
+          <DialogTitle>
+            {isEditing ? "Edit Certification" : "Add Certification"}
+          </DialogTitle>
+          <DialogDescription>
+            Enter the details of your certification
+          </DialogDescription>
         </DialogHeader>
         <ScrollArea className="pr-2 sm:pr-4 h-[500px]">
           <div className="space-y-4 p-1">
@@ -147,16 +181,25 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Certification Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value={CERTIFICATION_TYPE.LANGUAGE}>Language Certification</SelectItem>
-                      <SelectItem value={CERTIFICATION_TYPE.STANDARDIZED_TEST}>Standardized Test</SelectItem>
-                      <SelectItem value={CERTIFICATION_TYPE.OTHER}>Other Certification</SelectItem>
+                      <SelectItem value={CERTIFICATION_TYPE.LANGUAGE}>
+                        Language Certification
+                      </SelectItem>
+                      <SelectItem value={CERTIFICATION_TYPE.STANDARDIZED_TEST}>
+                        Standardized Test
+                      </SelectItem>
+                      <SelectItem value={CERTIFICATION_TYPE.OTHER}>
+                        Other Certification
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -171,7 +214,10 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
                 <FormItem>
                   <FormLabel>Certification Name</FormLabel>
                   <FormControl>
-                    <Input placeholder={getPlaceholderByType(form.watch("type"))} {...field} />
+                    <Input
+                      placeholder={getPlaceholderByType(form.watch("type"))}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,7 +231,7 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
                 <FormItem>
                   <FormLabel>Issuing Organization</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Amazon Web Services" {...field} />
+                    <Input placeholder="British Council" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -255,11 +301,19 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
                           <div className="flex justify-center items-center p-2.5 border rounded-full">
                             <Upload className="size-6 text-muted-foreground" />
                           </div>
-                          <p className="font-medium text-sm">Drag & drop image here</p>
-                          <p className="text-muted-foreground text-xs">PNG, JPG, JPEG, or GIF (max 10MB)</p>
+                          <p className="font-medium text-sm">
+                            Drag & drop image here
+                          </p>
+                          <p className="text-muted-foreground text-xs">
+                            PNG, JPG, JPEG, or GIF (max 10MB)
+                          </p>
                         </div>
                         <FileUploadTrigger asChild>
-                          <Button variant="outline" size="sm" className="mt-2 w-fit">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2 w-fit"
+                          >
                             Browse files
                           </Button>
                         </FileUploadTrigger>
@@ -270,7 +324,11 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
                             <FileUploadItemPreview />
                             <FileUploadItemMetadata />
                             <FileUploadItemDelete asChild>
-                              <Button variant="ghost" size="icon" className="size-7">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-7"
+                              >
                                 <Trash2 className="size-4" />
                               </Button>
                             </FileUploadItemDelete>
@@ -287,17 +345,31 @@ const CertificationForm = ({ initialValues, onSubmit, onCancel }: CertificationF
         </ScrollArea>
 
         <DialogFooter className="flex sm:flex-row flex-col gap-2">
-          <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            className="w-full sm:w-auto"
+          >
             Cancel
           </Button>
           <Button type="submit" className="w-full sm:w-auto">
-            <Save className="mr-2 size-4" />
-            Save
+            {isLoading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="size-4" />
+                Save
+              </>
+            )}
           </Button>
         </DialogFooter>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default CertificationForm
+export default CertificationForm;

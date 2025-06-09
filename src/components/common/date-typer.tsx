@@ -1,7 +1,7 @@
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { format, isValid, parse } from "date-fns"
 import { type Control } from "react-hook-form"
-import { format, parse, isValid } from "date-fns"
 
 interface DefaultDateInputProps {
     control: Control<any>
@@ -55,12 +55,13 @@ export function DefaultDateInput({
 
                 return (
                     <FormItem>
-                        <FormLabel>{label}{required && <span className="ml-1 text-red-500">*</span>}</FormLabel>
+                        <FormLabel>{label}</FormLabel>
                         <FormControl>
                             <Input
                                 placeholder={placeholder}
                                 disabled={disabled}
                                 value={displayValue}
+                                required={required}
                                 onChange={(e) => {
                                     // Always update with the raw input value
                                     field.onChange(e.target.value);

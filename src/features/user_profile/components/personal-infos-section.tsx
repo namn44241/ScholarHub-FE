@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { isObjectNull } from "@/utils/functions";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
@@ -16,7 +17,7 @@ import { PersonalInfoForm } from "./personal-infos-form";
 
 const PersonalInfoSection = ({ isCurrentUser }: IPersonalInfoSectionProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const { data, refetch } = useGetPersonal();
+  const { data, isLoading, refetch } = useGetPersonal();
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -24,8 +25,12 @@ const PersonalInfoSection = ({ isCurrentUser }: IPersonalInfoSectionProps) => {
 
   const handleSuccess = () => {
     setIsEditing(false);
-    refetch(); // Refresh the data after successful submission
+    refetch();
   };
+
+  if (isLoading) {
+    return <PersonalInfoSkeleton isCurrentUser={isCurrentUser || false} />;
+  }
 
   return (
     <Card className="border-muted-foreground/20">
@@ -154,6 +159,66 @@ const PersonalInfoSection = ({ isCurrentUser }: IPersonalInfoSectionProps) => {
             </Button>
           </div>
         )}
+      </CardContent>
+    </Card>
+  );
+};
+
+const PersonalInfoSkeleton = ({
+  isCurrentUser,
+}: {
+  isCurrentUser?: boolean;
+}) => {
+  return (
+    <Card className="border-muted-foreground/20">
+      <CardHeader className="flex flex-row justify-between items-center pb-4 border-b">
+        <div>
+          <CardTitle className="text-xl">About</CardTitle>
+          <CardDescription>Personal information</CardDescription>
+        </div>
+        {isCurrentUser && <Skeleton className="rounded-md w-9 h-9" />}
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-6">
+          <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+            <div>
+              <Skeleton className="mb-2 w-16 h-4" />
+              <Skeleton className="w-24 h-4" />
+            </div>
+            <div>
+              <Skeleton className="mb-2 w-16 h-4" />
+              <Skeleton className="w-32 h-4" />
+            </div>
+            <div>
+              <Skeleton className="mb-2 w-10 h-4" />
+              <Skeleton className="w-40 h-4" />
+            </div>
+            <div>
+              <Skeleton className="mb-2 w-20 h-4" />
+              <Skeleton className="w-28 h-4" />
+            </div>
+            <div>
+              <Skeleton className="mb-2 w-32 h-4" />
+              <Skeleton className="w-36 h-4" />
+            </div>
+            <div>
+              <Skeleton className="mb-2 w-24 h-4" />
+              <Skeleton className="w-20 h-4" />
+            </div>
+            <div>
+              <Skeleton className="mb-2 w-14 h-4" />
+              <Skeleton className="w-16 h-4" />
+            </div>
+          </div>
+          <div>
+            <Skeleton className="mb-2 w-28 h-4" />
+            <div className="space-y-2">
+              <Skeleton className="w-full h-4" />
+              <Skeleton className="w-full h-4" />
+              <Skeleton className="w-3/4 h-4" />
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

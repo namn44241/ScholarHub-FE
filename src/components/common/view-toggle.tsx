@@ -29,13 +29,13 @@ export function ViewToggle({
             <SelectContent>
                 <SelectItem value="list">
                     <div className="flex items-center gap-2">
-                        <List className="w-4 h-4" strokeWidth={1.5} />
+                        <List className="size-4" strokeWidth={1.5} />
                         <span>View By List</span>
                     </div>
                 </SelectItem>
                 <SelectItem value="grid">
                     <div className="flex items-center gap-2">
-                        <LayoutGrid className="w-4 h-4" strokeWidth={1.5} />
+                        <LayoutGrid className="size-4" strokeWidth={1.5} />
                         <span>View By Grid</span>
                     </div>
                 </SelectItem>

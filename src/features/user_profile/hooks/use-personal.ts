@@ -1,6 +1,6 @@
 import { GC_TIME, STALE_TIME } from "@/utils/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { personalService, type IPersonalDTO } from "../services/personalService";
+import { personalService, type IPersonalDTO } from "../services/personal-service";
 
 export const personalKeys = {
   all: ["personal"] as const,

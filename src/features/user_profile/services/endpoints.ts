@@ -5,6 +5,6 @@ export const USER_PROFILE_ENDPOINTS = {
   EXPERIENCE: `/user/experience`,
   ACHIEVEMENT: `/user/achievement`,
   CERTIFICATION: `/user/certification`,
-  PUBLICATIONS: `/user/publication`,
+  PUBLICATION: `/user/publication`,
   REFERENCE: `/user/reference`,
 };

@@ -105,7 +105,7 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
                     key={index}
                     className="flex items-center gap-2 p-2 border rounded"
                   >
-                    <FileText className="w-4 h-4" />
+                    <FileText className="size-4" />
                     <span className="flex-1 text-sm">
                       {url.split("/").pop()}
                     </span>
