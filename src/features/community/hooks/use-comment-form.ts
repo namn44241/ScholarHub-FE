@@ -43,12 +43,15 @@ export const useCommentForm = (postId: string) => {
   };
 
   const handleSubmitReply = async () => {
-    if (!replyContent.trim()) return;
+    if (!replyContent.trim() || !replyingTo) return;
 
     try {
       await createCommentMutation.mutateAsync({
         postId,
-        data: { content: replyContent },
+        data: { 
+          content: replyContent,
+          parent_id: replyingTo 
+        },
       });
       setReplyContent("");
       setReplyingTo(null);
