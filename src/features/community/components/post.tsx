@@ -12,9 +12,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MarkdownPreview } from "@/components/ui/markdown-preview";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/contexts/auth-context";
+import { cn } from "@/lib/utils";
 import { BACKEND_IP } from "@/utils/endpoints";
 import {
+  EyeClosed,
   FileText,
   Heart,
   Loader2,
@@ -22,13 +26,17 @@ import {
   MoreHorizontal,
   Repeat,
   Send,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useCreateRepost, useToggleSavePost } from "../hooks/use-community";
+import {
+  useCreateRepost,
+  useDeletePost,
+  useToggleSavePost,
+} from "../hooks/use-community";
 import type { IPost } from "../utils/types";
 import CommentSection from "./comment-section";
-import { MarkdownPreview } from "@/components/ui/markdown-preview";
 
 interface IPostProps {
   post: IPost;
@@ -44,9 +52,11 @@ const Post = ({
   isReactionLoading,
 }: IPostProps) => {
   const [showComments, setShowComments] = useState(false);
+  const { user } = useAuth();
 
   const createRepostMutation = useCreateRepost();
   const toggleSavePostMutation = useToggleSavePost();
+  const deletePostMutation = useDeletePost();
 
   const handleRepost = async () => {
     try {
@@ -88,7 +98,6 @@ const Post = ({
           </Avatar>
           <div className="flex flex-col">
             <p className="font-medium text-sm">{post.author.name}</p>
-            <p className="text-muted-foreground text-xs">{post.author.role}</p>
             <p className="text-muted-foreground text-xs">{post.timestamp}</p>
           </div>
         </div>
@@ -109,12 +118,51 @@ const Post = ({
                 disabled={isSaving}
                 className="flex items-center gap-2"
               >
-                {isSaving && <Loader2 className="w-3 h-3 animate-spin" />}
-                {post.userSaved ? "Unsave post" : "Save post"}
+                {isSaving ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Heart
+                      className={cn(
+                        "size-4",
+                        post.userSaved
+                          ? "fill-destructive text-destructive"
+                          : ""
+                      )}
+                    />
+                    {post.userSaved ? "Unsave post" : "Save post"}
+                  </>
+                )}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleHidePost}>
+                <EyeClosed className="size-4" />
                 Hide post
               </DropdownMenuItem>
+              {post?.author?.id !== user?.id && (
+                <DropdownMenuItem
+                  onClick={() => deletePostMutation.mutate(post.id)}
+                  className="hover:bg-destructive/10 text-destructive"
+                >
+                  {deletePostMutation.isPending ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      <span className="text-destructive hover:text-destructive">
+                        Deleting post...
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="size-4 text-destructive" />
+                      <span className="text-destructive hover:text-destructive">
+                        Delete post
+                      </span>
+                    </>
+                  )}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

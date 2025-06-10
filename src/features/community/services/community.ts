@@ -12,6 +12,7 @@ export interface ICreatePostRequest {
 
 export interface ICreateCommentRequest {
   content: string;
+  parent_id?: string;
 }
 
 export interface IReactionRequest {
@@ -107,6 +108,13 @@ export const communityService = {
 
   async getSavedPostsCount() {
     const response = await apiClient.get(COMMUNITY_ENDPOINTS.SAVED_POSTS_COUNT);
+    return response;
+  },
+
+  async deletePost(postId: string) {
+    const response = await apiClient.delete(
+      COMMUNITY_ENDPOINTS.POST_DELETE(postId)
+    );
     return response;
   },
 };

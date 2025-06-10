@@ -5,6 +5,7 @@ import { MarkdownPreview } from "@/components/ui/markdown-preview";
 import { FileText, ImageIcon, Send, Video, X, Eye, Edit } from "lucide-react";
 import { usePostCreator } from "../hooks/use-post-creator";
 import { BACKEND_IP } from "@/utils/endpoints";
+import { useState } from "react";
 
 export interface IPostCreatorProps {
   onCreatePost?: (post: any) => void;
@@ -42,19 +43,19 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
               variant={!isPreviewMode ? "default" : "ghost"}
               size="sm"
               onClick={() => setIsPreviewMode(false)}
-              className="h-7 px-3 text-xs"
+              className="px-3 h-7 text-xs"
             >
-              <Edit className="w-3 h-3 mr-1" />
+              <Edit className="mr-1 w-3 h-3" />
               Edit
             </Button>
             <Button
               variant={isPreviewMode ? "default" : "ghost"}
               size="sm"
               onClick={() => setIsPreviewMode(true)}
-              className="h-7 px-3 text-xs"
+              className="px-3 h-7 text-xs"
               disabled={!content.trim()}
             >
-              <Eye className="w-3 h-3 mr-1" />
+              <Eye className="mr-1 w-3 h-3" />
               Preview
             </Button>
           </div>
@@ -62,14 +63,14 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
           {/* Content input/preview */}
           {!isPreviewMode ? (
             <Textarea
-              placeholder="What do you want to talk about? (Supports Markdown: # ## ``` ---)"
-              className="flex-1 mb-3 resize-none min-h-[100px]"
+              placeholder="What do you want to talk about?"
+              className="flex-1 mb-3 min-h-[100px] resize-none"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               disabled={isCreating}
             />
           ) : (
-            <div className="min-h-[100px] p-3 border rounded-md bg-muted/30">
+            <div className="bg-muted/30 p-3 border rounded-md min-h-[100px]">
               {content.trim() ? (
                 <MarkdownPreview content={content} />
               ) : (

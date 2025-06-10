@@ -8,6 +8,7 @@ export const COMMUNITY_ENDPOINTS = {
   POST_REACTION: (postId: string) => `/community/posts/${postId}/reaction`,
   POST_REPOST: (postId: string) => `/community/posts/${postId}/repost`,
   POST_SAVE: (postId: string) => `/community/posts/${postId}/save`,
+  POST_DELETE: (postId: string) => `/community/posts/${postId}/delete`,
 
   // comments endpoints
   POST_COMMENTS: (postId: string) => `/community/posts/${postId}/comments`,
