@@ -1,14 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, ImageIcon, Send, Video, X } from "lucide-react";
+import { MarkdownPreview } from "@/components/ui/markdown-preview";
+import { FileText, ImageIcon, Send, Video, X, Eye, Edit } from "lucide-react";
 import { usePostCreator } from "../hooks/use-post-creator";
+import { useState } from "react";
 
 export interface IPostCreatorProps {
   onCreatePost?: (post: any) => void;
 }
 
 const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+  
   const {
     content,
     setContent,
@@ -31,13 +35,49 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
   return (
     <Card className="w-full">
       <CardContent>
-        <Textarea
-          placeholder="What do you want to talk about?"
-          className="flex-1 mb-3 resize-none"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          disabled={isCreating}
-        />
+        <div className="space-y-3">
+          {/* Toggle buttons */}
+          <div className="flex gap-1">
+            <Button
+              variant={!isPreviewMode ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setIsPreviewMode(false)}
+              className="h-7 px-3 text-xs"
+            >
+              <Edit className="w-3 h-3 mr-1" />
+              Edit
+            </Button>
+            <Button
+              variant={isPreviewMode ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setIsPreviewMode(true)}
+              className="h-7 px-3 text-xs"
+              disabled={!content.trim()}
+            >
+              <Eye className="w-3 h-3 mr-1" />
+              Preview
+            </Button>
+          </div>
+
+          {/* Content input/preview */}
+          {!isPreviewMode ? (
+            <Textarea
+              placeholder="What do you want to talk about? (Supports Markdown: # ## ``` ---)"
+              className="flex-1 mb-3 resize-none min-h-[100px]"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              disabled={isCreating}
+            />
+          ) : (
+            <div className="min-h-[100px] p-3 border rounded-md bg-muted/30">
+              {content.trim() ? (
+                <MarkdownPreview content={content} />
+              ) : (
+                <p className="text-muted-foreground text-sm">Nothing to preview</p>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Preview attachments */}
         {(attachments.images.length > 0 ||

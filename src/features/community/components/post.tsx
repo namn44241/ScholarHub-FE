@@ -28,6 +28,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useCreateRepost, useToggleSavePost } from "../hooks/use-community";
 import type { IPost } from "../utils/types";
 import CommentSection from "./comment-section";
+import { MarkdownPreview } from "@/components/ui/markdown-preview";
 
 interface IPostProps {
   post: IPost;
@@ -119,7 +120,9 @@ const Post = ({
         </div>
       </CardHeader>
       <CardContent className="pb-3">
-        <p className="mb-4 text-sm">{post.content}</p>
+        <div className="post-content">
+          <MarkdownPreview content={post.content} className="mb-3" />
+        </div>
 
         {/* Render Image */}
         {post.image && (
