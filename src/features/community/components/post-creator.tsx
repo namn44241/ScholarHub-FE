@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { FileText, ImageIcon, Send, Video, X } from "lucide-react";
 import { usePostCreator } from "../hooks/use-post-creator";
-
+import { BACKEND_IP } from "@/utils/endpoints";
 export interface IPostCreatorProps {
   onCreatePost?: (post: any) => void;
 }
@@ -49,7 +49,7 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
                 {attachments.images.map((url, index) => (
                   <div key={index} className="relative">
                     <img
-                      src={url}
+                      src={`${BACKEND_IP}${url}`}
                       alt="Preview"
                       className="border rounded w-20 h-20 object-cover"
                     />
@@ -73,7 +73,7 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
                 {attachments.videos.map((url, index) => (
                   <div key={index} className="relative">
                     <video
-                      src={url}
+                      src={`${BACKEND_IP}${url}`}
                       className="border rounded w-20 h-20 object-cover"
                       controls={false}
                       muted
