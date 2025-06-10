@@ -1,5 +1,3 @@
-
-
 import { AnimatePresence, motion } from "framer-motion"
 import type React from "react"
 import { useEffect, useState } from "react"
@@ -7,7 +5,8 @@ import { useEffect, useState } from "react"
 interface Logo {
     name: string
     id: number
-    img: React.ComponentType<React.SVGProps<SVGSVGElement>>
+    img: string | React.ComponentType<React.SVGProps<SVGSVGElement>>
+    imgDark?: string | React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
 interface LogoCarouselProps {
@@ -44,20 +43,55 @@ const LogoColumn = ({ logos, columnIndex }: { logos: Logo[]; columnIndex: number
         return () => clearInterval(interval)
     }, [logos.length, columnIndex])
 
-    const CurrentLogo = logos[currentIndex].img
+    const currentLogo = logos[currentIndex]
+
+    const getLogoSizeClass = (logoName: string) => {
+        switch (logoName.toLowerCase()) {
+            case 'mit':
+                return 'h-16 w-16 md:h-24 md:w-64' 
+            case 'ptit':
+                return 'h-10 w-10 md:h-20 md:w-12' 
+            default:
+                return 'h-20 w-20 md:h-32 md:w-32'
+        }
+    }
 
     return (
         <div className="relative h-14 w-24 overflow-hidden md:h-24 md:w-48">
             <AnimatePresence mode="wait">
                 <motion.div
-                    key={`${logos[currentIndex].id}-${currentIndex}`}
+                    key={`${currentLogo.id}-${currentIndex}`}
                     className="absolute inset-0 flex items-center justify-center"
                     variants={fadeVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
                 >
-                    <CurrentLogo className="h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32" />
+                    {typeof currentLogo.img === 'string' ? (
+                        <>
+                            <img 
+                                src={currentLogo.img} 
+                                alt={currentLogo.name}
+                                className={`max-h-[80%] max-w-[80%] object-contain transition-none ${getLogoSizeClass(currentLogo.name)} dark:hidden`}
+                            />
+                            {currentLogo.imgDark && (
+                                <img 
+                                    src={currentLogo.imgDark} 
+                                    alt={currentLogo.name}
+                                    className={`max-h-[80%] max-w-[80%] object-contain transition-none ${getLogoSizeClass(currentLogo.name)} hidden dark:block`}
+                                />
+                            )}
+                            {!currentLogo.imgDark && (
+                                <img 
+                                    src={currentLogo.img} 
+                                    alt={currentLogo.name}
+                                    className={`max-h-[80%] max-w-[80%] object-contain transition-none ${getLogoSizeClass(currentLogo.name)} hidden dark:block`}
+                                />
+                            )}
+                        </>
+                    ) : (
+                        <currentLogo.img className={`max-h-[80%] max-w-[80%] object-contain transition-none ${getLogoSizeClass(currentLogo.name)}`} />
+                    )}
                 </motion.div>
             </AnimatePresence>
         </div>
@@ -104,4 +138,3 @@ export function LogoCarousel({ columnCount = 2, logos }: LogoCarouselProps) {
         </div>
     )
 }
-

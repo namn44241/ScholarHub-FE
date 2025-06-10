@@ -1,6 +1,8 @@
 import AnimatedContent from "@/components/decoration/animate-content"
 import FadeContent from "@/components/decoration/fade-content"
 import { LazyLoadImage } from "react-lazy-load-image-component"
+import updatesImg from "@/assets/images/landing/updates_image.png"
+import updatesImgDark from "@/assets/images/landing/updates_image_dark.png"
 
 export const LatestInformationSection = () => {
     return (
@@ -41,9 +43,14 @@ export const LatestInformationSection = () => {
             >
                 <div className="max-w-4xl mx-auto">
                     <LazyLoadImage
-                        src={"/placeholder.svg"}
+                        src={updatesImg}
                         alt={"Illustration for latest information section"}
-                        className="w-full h-full rounded-lg object-cover dark:brightness-[0.2] dark:grayscale aspect-video"
+                        className="w-full h-auto rounded-lg object-contain block dark:hidden"
+                    />
+                    <LazyLoadImage
+                        src={updatesImgDark}
+                        alt={"Illustration for latest information section"}
+                        className="w-full h-auto rounded-lg object-contain hidden dark:block"
                     />
                 </div>
             </FadeContent>

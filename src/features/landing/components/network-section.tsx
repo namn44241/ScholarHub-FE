@@ -1,6 +1,8 @@
 import AnimatedContent from "@/components/decoration/animate-content"
 import FadeContent from "@/components/decoration/fade-content"
 import { LazyLoadImage } from "react-lazy-load-image-component"
+import networkImg from "@/assets/images/landing/network_image.png"
+import networkImgDark from "@/assets/images/landing/network_image_dark.png"
 
 export const NetworkSection = () => {
     return (
@@ -38,9 +40,14 @@ export const NetworkSection = () => {
             >
                 <div className="max-w-4xl mx-auto">
                     <LazyLoadImage
-                        src={"/placeholder.svg"}
+                        src={networkImg}
                         alt={"Illustration for networking opportunities"}
-                        className="w-full h-full rounded-lg object-cover dark:brightness-[0.2] dark:grayscale aspect-video"
+                        className="w-full h-auto rounded-lg object-contain block dark:hidden"
+                    />
+                    <LazyLoadImage
+                        src={networkImgDark}
+                        alt={"Illustration for networking opportunities"}
+                        className="w-full h-auto rounded-lg object-contain hidden dark:block"
                     />
                 </div>
             </FadeContent>
