@@ -141,7 +141,7 @@ const Post = ({
                 <EyeClosed className="size-4" />
                 Hide post
               </DropdownMenuItem>
-              {post?.author?.id !== user?.id && (
+              {post?.author?.id === user?.id && (
                 <DropdownMenuItem
                   onClick={() => deletePostMutation.mutate(post.id)}
                   className="hover:bg-destructive/10 text-destructive"
