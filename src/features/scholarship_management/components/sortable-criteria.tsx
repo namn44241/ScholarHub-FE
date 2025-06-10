@@ -29,7 +29,7 @@ export const SortableCriteria = ({
                 <CardContent className="p-3">
                     <div className="flex items-center gap-2 mb-2">
                         <div {...attributes} {...listeners} className="cursor-grab">
-                            <GripVertical className="w-5 h-5 text-muted-foreground" />
+                            <GripVertical className="size-4 text-muted-foreground" />
                         </div>
                         <FormLabel className="m-0 font-medium text-sm">{label}</FormLabel>
                     </div>

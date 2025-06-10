@@ -8,6 +8,7 @@ import { ArrowUp, Loader2, Square, Sparkles } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useGetChat, usePostChat } from "../hooks/use-chatbot"
 import { ChatMessage } from "./chat-messages"
+import { Textarea } from "@/components/ui/textarea"
 
 interface IChatInterfaceProps {
   userId: string
@@ -81,11 +82,11 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
     e.target.style.height = `${newHeight}px`
   }
 
-  if (!threadId) {
+  if (threadId) {
     return (
       <div className="flex flex-col h-full">
         <div className="flex flex-1 justify-center items-center p-8">
-          <div className="max-w-md text-center">
+          <div className="max-w-xl text-center">
             <div className="bg-primary/10 mx-auto mb-6 p-6 rounded-full w-fit">
               <Sparkles className="size-12 text-primary" />
             </div>
@@ -122,7 +123,7 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
           {isLoadingChat ? (
             <div className="flex justify-center items-center h-full">
               <div className="flex flex-col items-center">
-                <Loader2 className="mb-2 w-8 h-8 text-primary animate-spin" />
+                <Loader2 className="mb-2 size-8 text-primary animate-spin" />
                 <p className="text-muted-foreground text-sm">Loading messages...</p>
               </div>
             </div>
@@ -130,7 +131,7 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
             <div className="flex justify-center items-center p-8 h-full">
               <div className="text-center">
                 <div className="bg-primary/10 mx-auto mb-4 p-6 rounded-full w-fit">
-                  <Sparkles className="w-8 h-8 text-primary" />
+                  <Sparkles className="size-8 text-primary" />
                 </div>
                 <h3 className="mb-2 font-medium text-lg">How can I help you today?</h3>
                 <p className="max-w-md text-muted-foreground text-sm">
@@ -152,10 +153,10 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t no-scrollbar">
         <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
           <div className="relative">
-            <textarea
+            <Textarea
               ref={textareaRef}
               value={message}
               onChange={handleTextareaChange}
@@ -169,13 +170,13 @@ export function ChatInterface({ userId, threadId, onNewThread, hasThreads }: ICh
               rows={1}
             />
 
-            <div className="right-2 bottom-2 absolute">
+            <div className="right-2 bottom-2.5 absolute">
               {isSubmitting ? (
-                <Button type="button" size="icon" variant="ghost" className="w-8 h-8">
+                <Button type="button" size="icon" variant="ghost" className="size-8">
                   <Square className="size-4" />
                 </Button>
               ) : (
-                <Button type="submit" size="icon" className="w-8 h-8" disabled={!message.trim()}>
+                <Button type="submit" size="icon" className="size-8" disabled={!message.trim()}>
                   <ArrowUp className="size-4" />
                 </Button>
               )}

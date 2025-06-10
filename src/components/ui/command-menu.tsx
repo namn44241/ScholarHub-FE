@@ -52,8 +52,8 @@ export function CommandMenu({ ...props }: DialogProps) {
                 {...props}
             >
                 <span className="hidden lg:inline-flex">Search on website...</span>
-                <span className="inline-flex lg:hidden">Search...</span>
-                <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                <span className="lg:hidden inline-flex">Search...</span>
+                <kbd className="hidden top-[0.3rem] right-[0.3rem] absolute sm:flex items-center gap-1 bg-muted opacity-100 px-1.5 border rounded h-5 font-mono font-medium text-[10px] pointer-events-none select-none">
                     <span className="text-xs">⌘</span>K
                 </kbd>
             </Button>
@@ -87,8 +87,8 @@ export function CommandMenu({ ...props }: DialogProps) {
                                         runCommand(() => navigate({ to: navItem.href as string, search: { scrollToTop: "true" } }))
                                     }}
                                 >
-                                    <div className="mr-2 flex h-4 w-4 items-center justify-center">
-                                        <Circle className="h-3 w-3" />
+                                    <div className="flex justify-center items-center mr-2 size-4">
+                                        <Circle className="w-3 h-3" />
                                     </div>
                                     {navItem.title}
                                 </CommandItem>

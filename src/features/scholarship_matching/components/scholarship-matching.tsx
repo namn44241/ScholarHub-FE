@@ -182,19 +182,19 @@ export const ScholarshipMatching = ({
               // Determine status styles
               const statusStyles = {
                 met: {
-                  icon: <CheckCircle className="w-5 h-5 text-green-500" />,
+                  icon: <CheckCircle className="size-4 text-green-500" />,
                   textColor: "text-green-600",
                   progressBg: "bg-green-100",
                   progressFill: "[&>*]:bg-green-500",
                 },
                 "partially-met": {
-                  icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+                  icon: <AlertCircle className="size-4 text-amber-500" />,
                   textColor: "text-amber-600",
                   progressBg: "bg-amber-100",
                   progressFill: "[&>*]:bg-amber-500",
                 },
                 "not-met": {
-                  icon: <XCircle className="w-5 h-5 text-red-500" />,
+                  icon: <XCircle className="size-4 text-red-500" />,
                   textColor: "text-red-600",
                   progressBg: "bg-red-100",
                   progressFill: "[&>*]:bg-red-500",
@@ -233,7 +233,7 @@ export const ScholarshipMatching = ({
                   />
 
                   <div className="flex items-start gap-2 pt-1">
-                    <div className="flex-shrink-0 w-5 h-5" />
+                    <div className="flex-shrink-0 size-4" />
                     <p className="text-muted-foreground text-sm">
                       {criterion.advice}
                     </p>

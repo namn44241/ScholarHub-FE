@@ -50,7 +50,7 @@ const SelectedFilters = ({ activeFilters, removeFilter, clearAllFilters }: ISele
               <Button
                 size="sm"
                 variant="ghost"
-                className="hover:bg-primary/10 p-0 rounded-full w-5 h-5"
+                className="hover:bg-primary/10 p-0 rounded-full size-4"
                 onClick={() => removeFilter(filter.key, filter.value)}
               >
                 <X className="size-3" />

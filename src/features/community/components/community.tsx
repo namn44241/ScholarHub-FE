@@ -115,7 +115,7 @@ export const Community = () => {
                     <ArrowLeft className="size-4" />
                   </Button>
                   <CardTitle className="flex items-center gap-2">
-                    <Bookmark className="w-5 h-5" />
+                    <Bookmark className="size-4" />
                     Saved Posts ({visibleSavedPosts.length})
                   </CardTitle>
                 </CardHeader>

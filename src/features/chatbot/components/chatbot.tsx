@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { useNavigate } from "@tanstack/react-router";
 import {
   PanelLeftClose,
@@ -44,7 +44,6 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
     }
   };
 
-  // Reset activeThreadId if current thread was deleted
   useEffect(() => {
     if (activeThreadId && threads) {
       const currentThreadExists = threads.some(
@@ -86,7 +85,7 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
 
   return (
     <div className="mx-auto px-4 py-6 container">
-      <div className="bg-background border rounded-lg h-[calc(100vh-12rem)] overflow-hidden">
+      <div className="bg-background border rounded-lg h-[calc(100vh-8rem)]">
         <div className="flex h-full">
           {/* Sidebar */}
           <div
@@ -96,11 +95,10 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
           >
             <Card className="border-0 rounded-none h-full">
               <div className="flex flex-col h-full">
-                {/* Sidebar Header */}
-                <div className="p-4 border-b">
+                <CardHeader className="border-b">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="bg-primary/10 p-2 rounded-lg">
-                      <Sparkles className="w-5 h-5 text-primary" />
+                      <Sparkles className="size-4 text-primary" />
                     </div>
                     <div>
                       <h2 className="font-semibold">ScholarHub AI</h2>
@@ -109,11 +107,11 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
                       </p>
                     </div>
                   </div>
-                  <Button onClick={handleNewThread} className="gap-2 w-full">
+                  <Button onClick={handleNewThread} className="w-full" size="sm">
                     <PlusIcon className="size-4" />
                     New Conversation
                   </Button>
-                </div>
+                </CardHeader>
 
                 {/* Thread List */}
                 <div className="flex-1 overflow-hidden">

@@ -189,7 +189,7 @@ const Post = ({
               <Loader2 className="size-4 animate-spin" />
             ) : (
               <Heart
-                className={`h-4 w-4 ${
+                className={`size-4 ${
                   post.userReacted ? "fill-primary text-primary" : ""
                 }`}
               />

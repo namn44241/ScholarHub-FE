@@ -136,7 +136,7 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
             onClick={triggerImageUpload}
             disabled={isUploading || isCreating}
           >
-            <ImageIcon className="w-5 h-5 text-muted-foreground" />
+            <ImageIcon className="size-4 text-muted-foreground" />
           </Button>
           <input
             ref={imageInputRef}
@@ -155,7 +155,7 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
             onClick={triggerVideoUpload}
             disabled={isUploading || isCreating}
           >
-            <Video className="w-5 h-5 text-muted-foreground" />
+            <Video className="size-4 text-muted-foreground" />
           </Button>
           <input
             ref={videoInputRef}
@@ -173,7 +173,7 @@ const PostCreator = ({ onCreatePost }: IPostCreatorProps) => {
             onClick={triggerFileUpload}
             disabled={isUploading || isCreating}
           >
-            <FileText className="w-5 h-5 text-muted-foreground" />
+            <FileText className="size-4 text-muted-foreground" />
           </Button>
           <input
             ref={fileInputRef}

@@ -125,7 +125,7 @@ export const MatchingSkeleton = () => {
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <Skeleton className="rounded-full w-5 h-5" />
+                    <Skeleton className="rounded-full size-4" />
                     <Skeleton className="w-32 h-5" />
                   </div>
                   <Skeleton className="rounded-full w-16 h-6" />
@@ -134,7 +134,7 @@ export const MatchingSkeleton = () => {
                 <Skeleton className="rounded-full w-full h-2" />
 
                 <div className="flex items-start gap-2 pt-1">
-                  <Skeleton className="flex-shrink-0 rounded-full w-5 h-5" />
+                  <Skeleton className="flex-shrink-0 rounded-full size-4" />
                   <div className="space-y-2 w-full">
                     <Skeleton className="w-full h-4" />
                     <Skeleton className="w-3/4 h-4" />
