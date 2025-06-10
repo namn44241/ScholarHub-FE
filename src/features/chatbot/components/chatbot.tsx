@@ -32,11 +32,18 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
     if (!userId) return;
     try {
       const newThreadId = await createNewThread({ user_id: userId });
+      console.log("New thread created with ID:", newThreadId);
+
       if (newThreadId) {
+        console.log("Navigating to new thread:", newThreadId);
+        // Cập nhật state trước khi navigate
         setActiveThreadId(newThreadId);
-        navigate({
+
+        // Navigate với replace để tránh conflict
+        await navigate({
           to: "/chatbot/$threadId",
           params: { threadId: newThreadId },
+          replace: true,
         });
       }
     } catch (error) {
@@ -44,44 +51,52 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
     }
   };
 
+  // Chỉ sync với initialThreadId khi component mount
   useEffect(() => {
-    if (activeThreadId && threads) {
-      const currentThreadExists = threads.some(
-        (thread) => thread.thread_id === activeThreadId
-      );
-
-      if (!currentThreadExists) {
-        if (threads.length > 0) {
-          const firstThreadId = threads[0].thread_id;
-          setActiveThreadId(firstThreadId);
-          navigate({
-            to: "/chatbot/$threadId",
-            params: { threadId: firstThreadId },
-          });
-        } else {
-          setActiveThreadId(undefined);
-          navigate({ to: "/chatbot" });
-        }
-      }
-    }
-  }, [threads, activeThreadId, navigate]);
-
-  useEffect(() => {
-    if (initialThreadId) {
+    if (initialThreadId && initialThreadId !== activeThreadId) {
       setActiveThreadId(initialThreadId);
     }
   }, [initialThreadId]);
 
+  // Xử lý trường hợp không có activeThreadId nhưng có threads
   useEffect(() => {
-    if (!activeThreadId && threads && threads?.length > 0) {
+    if (!activeThreadId && threads && threads.length > 0 && !initialThreadId) {
       const firstThreadId = threads[0].thread_id;
       setActiveThreadId(firstThreadId);
       navigate({
         to: "/chatbot/$threadId",
         params: { threadId: firstThreadId },
+        replace: true,
       });
     }
-  }, [activeThreadId, threads, navigate]);
+  }, [threads, activeThreadId, initialThreadId, navigate]);
+
+  // Xử lý trường hợp thread không tồn tại
+  useEffect(() => {
+    if (activeThreadId && threads && threads.length > 0) {
+      const currentThreadExists = threads.some(
+        (thread) => thread.thread_id === activeThreadId
+      );
+
+      if (!currentThreadExists) {
+        const firstThreadId = threads[0].thread_id;
+        setActiveThreadId(firstThreadId);
+        navigate({
+          to: "/chatbot/$threadId",
+          params: { threadId: firstThreadId },
+          replace: true,
+        });
+      }
+    }
+  }, [threads, activeThreadId, navigate]);
+
+  const handleSelectThread = async (threadId: string) => {
+    setActiveThreadId(threadId);
+    await navigate({
+      to: "/chatbot/$threadId",
+      params: { threadId },
+    });
+  };
 
   return (
     <div className="mx-auto px-4 py-6 container">
@@ -107,7 +122,11 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
                       </p>
                     </div>
                   </div>
-                  <Button onClick={handleNewThread} className="w-full" size="sm">
+                  <Button
+                    onClick={handleNewThread}
+                    className="w-full"
+                    size="sm"
+                  >
                     <PlusIcon className="size-4" />
                     New Conversation
                   </Button>
@@ -119,13 +138,7 @@ export function Chatbot({ userId, initialThreadId }: IChatbotProps) {
                     userId={userId}
                     threads={threads || []}
                     activeThreadId={activeThreadId}
-                    onSelectThread={(threadId) => {
-                      setActiveThreadId(threadId);
-                      navigate({
-                        to: "/chatbot/$threadId",
-                        params: { threadId },
-                      });
-                    }}
+                    onSelectThread={handleSelectThread}
                     onNewThread={handleNewThread}
                     isLoading={isLoadingThreads}
                   />

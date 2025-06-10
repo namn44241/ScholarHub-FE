@@ -19,7 +19,7 @@ export const useGetPublication = () => {
     queryKey: publicationKeys.list(),
     queryFn: async () => {
       const response = await publicationService.getPublication();
-      return response.payload.publication;
+      return response.payload.publication || [];
     },
     staleTime: STALE_TIME,
     gcTime: GC_TIME,

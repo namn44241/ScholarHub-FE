@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import type { FormType } from "../utils/types";
-import { usePostScholarship } from "./use-scholarship-management";
+import { useDeleteScholarship, usePostScholarship } from "./use-scholarship-management";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -50,6 +50,7 @@ export const useScholarshipFormDialog = () => {
     useState<IScholarship | null>(null);
 
   const postScholarshipMutation = usePostScholarship();
+  const deleteScholarshipMutation = useDeleteScholarship();
 
   const form = useForm<ScholarshipFormValues>({
     resolver: zodResolver(formSchema),
@@ -152,6 +153,19 @@ export const useScholarshipFormDialog = () => {
     }
   };
 
+  const onDelete = async () => {
+    if (!scholarshipId) return;
+
+    try {
+      await deleteScholarshipMutation.mutateAsync(scholarshipId);
+      setIsOpen(false);
+      toast.success("Scholarship deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting scholarship:", error);
+      toast.error("Failed to delete scholarship.");
+    }
+  };
+
   const openDialog = (type: FormType, scholarship?: IScholarship) => {
     setFormType(type);
 
@@ -202,6 +216,8 @@ export const useScholarshipFormDialog = () => {
     scholarshipId,
     isSubmitting: postScholarshipMutation.isPending,
     onSubmit: form.handleSubmit(onSubmit),
+    onDelete,
+    isDeleting: deleteScholarshipMutation.isPending,
     openDialog,
   };
 };

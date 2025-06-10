@@ -141,9 +141,9 @@ const PublicationsSection = ({ isCurrentUser }: IPublicationsSectionProps) => {
                 {truncateText(pub.venue_name, 40)}
               </p>
             )}
-            {pub.publication_date && (
+            {pub.publish_date && (
               <p className="text-muted-foreground text-sm">
-                {pub.publication_date}
+                {pub.publish_date}
               </p>
             )}
             {pub.url && (

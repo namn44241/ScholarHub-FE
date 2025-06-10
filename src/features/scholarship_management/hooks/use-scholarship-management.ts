@@ -57,3 +57,22 @@ export const usePostScholarship = () => {
     },
   });
 };
+
+export const useDeleteScholarship = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (scholarshipId: string) =>
+      scholarshipService.deleteScholarship(scholarshipId),
+    onSuccess: (_response, scholarshipId) => {
+      // Invalidate the list query to ensure it reflects the new data
+      queryClient.invalidateQueries({
+        queryKey: scholarshipKeys.lists(),
+      });
+
+      // Optionally, remove the specific scholarship from the cache
+      queryClient.removeQueries({
+        queryKey: scholarshipKeys.detail(scholarshipId),
+      });
+    },
+  });
+};

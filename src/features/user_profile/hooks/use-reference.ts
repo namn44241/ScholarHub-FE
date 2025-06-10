@@ -19,7 +19,7 @@ export const useGetReference = () => {
     queryKey: referenceKeys.list(),
     queryFn: async () => {
       const response = await referenceService.getReference();
-      return response.payload.reference;
+      return response.payload.reference || [];
     },
     staleTime: STALE_TIME,
     gcTime: GC_TIME,

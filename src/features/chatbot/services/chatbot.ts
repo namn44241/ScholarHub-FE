@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/fetch";
+import { toast } from "sonner";
 import type { IMessage, IThread } from "../utils/types";
 import { CHAT_BOT_MANAGE_ENDPOINTS } from "./endpoints";
-import { toast } from "sonner";
 
 export interface IThreadDTO {
   user_id: string;
@@ -95,16 +95,9 @@ export const chatbotService = {
     return response as IThreadResponse;
   },
 
-  threadsList: async ({
-    user_id,
-    limit,
-  }: IThreadDTO): Promise<IThreadResponse> => {
-    const response = await apiClient.post(
-      CHAT_BOT_MANAGE_ENDPOINTS.THREADS_LIST,
-      {
-        user_id,
-        limit,
-      }
+  threadsList: async (limit?: number): Promise<IThreadResponse> => {
+    const response = await apiClient.get(
+      `${CHAT_BOT_MANAGE_ENDPOINTS.THREADS_LIST}?limit=${limit || 10}`
     );
     if (!response.success) {
       toast.error("Failed to fetch threads");
