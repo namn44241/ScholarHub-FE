@@ -7,6 +7,12 @@ import searchingStep2 from "@/assets/images/landing/searching_step_2.png";
 import searchingStep2Dark from "@/assets/images/landing/searching_step_2_dark.png";
 import searchingStep3 from "@/assets/images/landing/searching_step_3.png";
 import searchingStep3Dark from "@/assets/images/landing/searching_step_3_dark.png";
+import mitLogo from "@/assets/images/landing/mit.png";
+import harvardLogo from "@/assets/images/landing/harvard.png";
+import utsLogo from "@/assets/images/landing/uts.png";
+import ptitLogo from "@/assets/images/landing/ptit.png";
+import stanfordLogo from "@/assets/images/landing/stanford.png";
+import utsLogoDark from "@/assets/images/landing/uts-dark.png";
 import { Icons } from "@/components/common/icons";
 import { ScanSearch, Sparkles, SquareUser } from "lucide-react";
 import type { ISearchingStep } from "./types";
@@ -47,7 +53,13 @@ export const SEARCHING_STEP: ISearchingStep[] = [
   },
 ];
 
-export const PARTNERSHIP_LOGOS = [{ name: "Shadcn", id: 1, img: Icons.logo }];
+export const PARTNERSHIP_LOGOS = [
+  { name: "MIT", id: 1, img: mitLogo },
+  { name: "Harvard University", id: 2, img: harvardLogo },
+  { name: "University of Technology Sydney", id: 3, img: utsLogo, imgDark: utsLogoDark },
+  { name: "PTIT", id: 4, img: ptitLogo },
+  { name: "Stanford University", id: 5, img: stanfordLogo },
+];
 
 export const CORE_VALUES = [
   {

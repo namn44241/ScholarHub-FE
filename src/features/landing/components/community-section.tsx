@@ -1,8 +1,8 @@
-
-
 import AnimatedContent from "@/components/decoration/animate-content"
 import FadeContent from "@/components/decoration/fade-content"
 import { LazyLoadImage } from "react-lazy-load-image-component"
+import communityImg from "@/assets/images/landing/community_image.png"
+import communityImgDark from "@/assets/images/landing/community_image_dark.png"
 
 export const CommunitySection = () => {
     return (
@@ -40,9 +40,14 @@ export const CommunitySection = () => {
             >
                 <div className="max-w-4xl mx-auto">
                     <LazyLoadImage
-                        src={"/placeholder.svg"}
-                        alt={"Illustration for community section"}
-                        className="w-full h-full rounded-lg object-cover dark:brightness-[0.2] dark:grayscale aspect-video"
+                        src={communityImg}
+                        alt={"Community collaboration and scholarship discussion"}
+                        className="w-full h-auto rounded-lg object-contain block dark:hidden"
+                    />
+                    <LazyLoadImage
+                        src={communityImgDark}
+                        alt={"Community collaboration and scholarship discussion"}
+                        className="w-full h-auto rounded-lg object-contain hidden dark:block"
                     />
                 </div>
             </FadeContent>
