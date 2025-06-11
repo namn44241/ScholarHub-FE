@@ -110,10 +110,7 @@ export const useDeleteDocument = () => {
 export const useUploadDocument = () => {
   return useMutation({
     mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await uploadService.uploadFile(formData);
+      const response = await uploadService.uploadFile(file);
       if (!response.success) {
         throw new Error(response.message);
       }
