@@ -5,6 +5,7 @@ import {
   EDUCATION_TYPE,
   EXPERIENCE_TYPE,
   GENDER_TYPE,
+  PUBLICATION_TYPE,
   REFERENCE_TYPE,
 } from "./constants";
 
