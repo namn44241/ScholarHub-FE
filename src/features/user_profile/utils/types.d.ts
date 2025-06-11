@@ -5,6 +5,7 @@ import {
   EDUCATION_TYPE,
   EXPERIENCE_TYPE,
   GENDER_TYPE,
+  PUBLICATION_TYPE,
   REFERENCE_TYPE,
 } from "./constants";
 
@@ -114,7 +115,6 @@ export interface IReference {
 export interface IProfileHeaderProps {
   userData?: IUser;
   isCurrentUser?: boolean;
-  userId?: string;
   followers?: number;
   following?: number;
   createdAt?: string;

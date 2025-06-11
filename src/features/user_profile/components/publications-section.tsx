@@ -120,7 +120,7 @@ const PublicationsSection = ({ isCurrentUser }: IPublicationsSectionProps) => {
   };
 
   const getPublicationsByType = (type: PUBLICATION_TYPE): IPublication[] => {
-    return publications.filter((pub) => pub.type === type);
+    return publications.filter((pub) => pub?.type === type);
   };
 
   const renderPublicationCard = (pub: IPublication) => (
