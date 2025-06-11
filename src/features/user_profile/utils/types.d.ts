@@ -39,7 +39,11 @@ export interface IPersonalInfo
     | "publications"
     | "documents"
     | "references"
-  > {}
+  > {
+  id?: string;
+  avatar?: string;
+  banner?: string;
+}
 
 export interface IEducation {
   id: string;
