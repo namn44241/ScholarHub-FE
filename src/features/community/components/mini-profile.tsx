@@ -88,7 +88,7 @@ const MiniProfile = ({
                   className="object-cover"
                 />
                 <AvatarFallback className="font-bold text-4xl">
-                  {profile.first_name?.charAt(0) || userData.email}
+                  {profile.first_name?.charAt(0) || userData.email.charAt(0)}
                 </AvatarFallback>
               </Avatar>
             </div>

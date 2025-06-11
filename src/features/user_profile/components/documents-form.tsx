@@ -20,10 +20,15 @@ import type { IDocument } from "../utils/types";
 export interface IDocumentFormProps {
   onSubmit: (values: IDocument) => void;
   isLoading?: boolean;
+  initialValues?: IDocument;
   onCancel: () => void;
 }
 
-const DocumentForm = ({ onSubmit, isLoading, onCancel }: IDocumentFormProps) => {
+const DocumentForm = ({
+  onSubmit,
+  isLoading,
+  onCancel,
+}: IDocumentFormProps) => {
   const {
     form,
     documentFiles,

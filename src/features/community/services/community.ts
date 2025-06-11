@@ -117,4 +117,34 @@ export const communityService = {
     );
     return response;
   },
+
+  async followUser(userId: string) {
+    const response = await apiClient.post(
+      COMMUNITY_ENDPOINTS.FOLLOW_USER(userId)
+    );
+    return response;
+  },
+
+  async unfollowUser(userId: string) {
+    const response = await apiClient.delete(
+      COMMUNITY_ENDPOINTS.UNFOLLOW_USER(userId)
+    );
+    return response;
+  },
+
+  async getFollowsList() {
+    const response = await apiClient.get(COMMUNITY_ENDPOINTS.FOLLOW);
+    return response;
+  },
+
+  // Update follow services
+  async getFollowersList(userId: string) {
+    const response = await apiClient.get(COMMUNITY_ENDPOINTS.FOLLOWERS(userId));
+    return response;
+  },
+
+  async getFollowingList(userId: string) {
+    const response = await apiClient.get(COMMUNITY_ENDPOINTS.FOLLOWING(userId));
+    return response;
+  },
 };

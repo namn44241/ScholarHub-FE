@@ -21,4 +21,10 @@ export const COMMUNITY_ENDPOINTS = {
   // utilities endpoints
   SAVED_POSTS: "/community/saved-posts",
   SAVED_POSTS_COUNT: "/community/saved-posts/count",
+
+  FOLLOW: "/community/follow",
+  FOLLOWERS: (userId: string) => `/community/followers?user_id=${userId}`,
+  FOLLOWING: (userId: string) => `/community/following?user_id=${userId}`,
+  FOLLOW_USER: (userId: string) => `/community/follow?user_id=${userId}`,
+  UNFOLLOW_USER: (userId: string) => `/community/follow?user_id=${userId}`,
 };

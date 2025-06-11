@@ -16,46 +16,66 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Eye, FileText, PackageOpen, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { DocumentFormValues } from "../hooks/use-document";
-import type { IDocumentsSectionProps } from "../utils/types";
+import {
+  useDeleteDocument,
+  useGetDocuments,
+  usePostDocument,
+  usePutDocument,
+} from "../hooks/use-document";
+import type { IDocument, IDocumentsSectionProps } from "../utils/types";
 import DocumentForm from "./documents-form";
 
 const DocumentsSection = ({
-  documents,
   isCurrentUser,
   isLoading,
 }: IDocumentsSectionProps & { isLoading?: boolean }) => {
-  const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<IDocument | null>(
+    null
+  );
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleOpenNewDocumentDialog = () => {
-    setIsDocumentDialogOpen(true);
-  };
+  // API hooks
+  const { data: documentsData = [], isLoading: apiLoading } = useGetDocuments();
+  const createDocumentMutation = usePostDocument();
+  const updateDocumentMutation = usePutDocument();
+  const deleteDocumentMutation = useDeleteDocument();
 
-  const handleCloseDialog = () => {
-    setIsDocumentDialogOpen(false);
-  };
-
-  const saveDocument = (values: DocumentFormValues) => {
-    const newDocuments = documents
-      ? JSON.parse(JSON.stringify(documents))
-      : {
-          items: [],
-        };
-
-    if (!newDocuments.items) {
-      newDocuments.items = [];
+  const handleSubmit = (values: IDocument) => {
+    if (selectedDocument) {
+      // Update existing document
+      updateDocumentMutation.mutate({
+        id: selectedDocument.id,
+        type: values.type,
+        file_path: values.file_path,
+        file_name: values.file_name,
+      });
+    } else {
+      // Create new document
+      createDocumentMutation.mutate({
+        type: values.type,
+        file_path: values.file_path || "",
+        file_name: values.file_name,
+      });
     }
-
-    newDocuments.items.push(values);
-    handleCloseDialog();
+    setIsDialogOpen(false);
+    setSelectedDocument(null);
   };
 
-  const deleteDocument = (index: number) => {
-    const newDocuments = JSON.parse(JSON.stringify(documents));
-    newDocuments.items.splice(index, 1);
+  const handleDelete = (id: string) => {
+    deleteDocumentMutation.mutate(id);
   };
 
-  if (isLoading) {
+  // const handleEdit = (document: IDocument) => {
+  //   setSelectedDocument(document);
+  //   setIsDialogOpen(true);
+  // };
+
+  const handleCancel = () => {
+    setSelectedDocument(null);
+    setIsDialogOpen(false);
+  };
+
+  if (isLoading || apiLoading) {
     return <DocumentsSkeleton isCurrentUser={isCurrentUser || false} />;
   }
 
@@ -72,22 +92,22 @@ const DocumentsSection = ({
         <div className="flex justify-between items-center">
           <p className="font-medium text-lg">All Documents</p>
           {isCurrentUser && (
-            <Button onClick={handleOpenNewDocumentDialog} size="sm">
+            <Button onClick={() => setIsDialogOpen(true)} size="sm">
               <Plus className="size-4" />
               Add Document
             </Button>
           )}
         </div>
 
-        {documents && documents.length > 0 ? (
+        {documentsData && documentsData.length > 0 ? (
           <div className="space-y-4">
-            {documents.map((document, index) => (
+            {documentsData.map((document, index) => (
               <Card
                 key={index}
                 className="bg-muted border border-muted-foreground/20 overflow-hidden"
               >
                 <CardContent className="p-6">
-                  <div className="flex flex-col justify-between items-center gap-4">
+                  <div className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4">
                       <div className="p-3 border rounded-lg">
                         <FileText className="size-4 text-muted-foreground" />
@@ -108,20 +128,9 @@ const DocumentsSection = ({
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      {isCurrentUser && (
-                        <>
-                          <Button
-                            variant="destructive"
-                            size="icon"
-                            onClick={() => deleteDocument(index)}
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </>
-                      )}
                       <Button variant="outline" size="icon">
                         <a
-                          href={document.file_path}
+                          href={`http://localhost:8000${document.file_path}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center"
@@ -129,6 +138,15 @@ const DocumentsSection = ({
                           <Eye className="size-4" />
                         </a>
                       </Button>
+                      {isCurrentUser && (
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => handleDelete(document.id)}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -147,10 +165,7 @@ const DocumentsSection = ({
         )}
       </CardContent>
 
-      <Dialog
-        open={isDocumentDialogOpen}
-        onOpenChange={setIsDocumentDialogOpen}
-      >
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Add Document</DialogTitle>
@@ -158,9 +173,9 @@ const DocumentsSection = ({
           </DialogHeader>
 
           <DocumentForm
-            onSubmit={saveDocument}
-            onCancel={handleCloseDialog}
-            // isLoading={isCreating || isUpdating || isDeleting}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            initialValues={selectedDocument || undefined}
           />
         </DialogContent>
       </Dialog>
@@ -185,7 +200,7 @@ const DocumentsSkeleton = ({ isCurrentUser }: { isCurrentUser: boolean }) => {
         </div>
 
         <div className="space-y-4">
-          {[...Array(3)].map((_, index) => (
+          {[...Array(1)].map((_, index) => (
             <Card
               key={index}
               className="bg-muted border border-muted-foreground/20 overflow-hidden"

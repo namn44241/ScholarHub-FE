@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SITE_CONFIG } from "@/configs/site";
+import { BACKEND_IP } from "@/utils/endpoints";
 import { useLocation } from "@tanstack/react-router";
 import {
   Calendar,
@@ -23,18 +24,31 @@ import {
 import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useGetPersonal } from "../hooks/use-personal";
+import { useGetProfileStats } from "../hooks/use-profile-stats";
 import type { IProfileHeaderProps } from "../utils/types";
-
+import { FollowListModal } from "./follow-list-modal";
+import { ImageUploadOverlay } from "./image-upload-overlay";
 export const ProfileHeader = ({
   userData,
   isCurrentUser = false,
-  followers = 0,
-  following = 0,
+  userId,
   createdAt,
 }: IProfileHeaderProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followModal, setFollowModal] = useState<{
+    isOpen: boolean;
+    type: "followers" | "following";
+    title: string;
+  }>({
+    isOpen: false,
+    type: "followers",
+    title: "",
+  });
   const location = useLocation();
   const { data, isLoading } = useGetPersonal();
+
+  const { data: profileStats, isLoading: statsLoading } =
+    useGetProfileStats(userId || "");
 
   const fullName = data?.first_name
     ? `${data.first_name}${data.middle_name ? ` ${data.middle_name}` : ""} ${
@@ -42,29 +56,71 @@ export const ProfileHeader = ({
       }`
     : "User";
 
-  if (isLoading) {
+  const avatarUrl =  userData?.avatar;
+  const bannerUrl =  userData?.banner;
+
+  const getImageUrl = (path: string | undefined) => {
+    if (!path) return "/placeholder.svg";
+    if (path.startsWith("http")) return path;
+    const fullUrl = `${BACKEND_IP}/${path}`;
+    return fullUrl;
+  };
+
+  const handleShowFollowers = () => {
+    setFollowModal({
+      isOpen: true,
+      type: "followers",
+      title: "Followers",
+    });
+  };
+
+  const handleShowFollowing = () => {
+    setFollowModal({
+      isOpen: true,
+      type: "following",
+      title: "Following",
+    });
+  };
+
+  const handleCloseModal = () => {
+    setFollowModal((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  if (isLoading || statsLoading) {
     return <ProfileHeaderSkeleton isCurrentUser={isCurrentUser || false} />;
   }
 
   return (
     <Card className="pt-0 w-full">
-      <div className="relative w-full h-48 overflow-hidden">
+      {/* Banner with Upload Overlay */}
+      <ImageUploadOverlay
+        mediaType="banner"
+        isCurrentUser={isCurrentUser}
+        className="relative rounded-t-xl w-full h-48 overflow-hidden"
+      >
         <LazyLoadImage
-          src={userData?.banner || "/placeholder.svg"}
+          src={getImageUrl(bannerUrl)}
           alt="Profile banner"
-          className="absolute inset-0 dark:brightness-[0.8] rounded-t-xl w-full h-full object-cover"
+          className="absolute inset-0 dark:brightness-[0.8] w-full h-full object-cover"
         />
-      </div>
+      </ImageUploadOverlay>
 
       <CardContent>
         <div className="relative">
+          {/* Avatar with Upload Overlay */}
           <div className="-top-16 left-4 sm:left-6 absolute rounded-full ring-4 ring-background">
-            <Avatar className="size-32">
-              <AvatarImage src={userData?.avatar} alt={fullName} />
-              <AvatarFallback className="font-bold text-4xl">
-                {fullName[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <ImageUploadOverlay
+              mediaType="avatar"
+              isCurrentUser={isCurrentUser}
+              className="rounded-full"
+            >
+              <Avatar className="size-32">
+                <AvatarImage src={getImageUrl(avatarUrl)} alt={fullName} />
+                <AvatarFallback className="font-bold text-4xl">
+                  {fullName[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </ImageUploadOverlay>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
@@ -126,15 +182,21 @@ export const ProfileHeader = ({
 
               <div className="flex flex-col items-end space-y-3 md:text-right">
                 <div className="flex gap-4 text-sm">
-                  <div>
+                  <div
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={handleShowFollowers}
+                  >
                     <span className="font-bold">
-                      {followers.toLocaleString()}
+                      {(profileStats?.followers_count || 0).toLocaleString()}
                     </span>{" "}
                     Followers
                   </div>
-                  <div>
+                  <div
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={handleShowFollowing}
+                  >
                     <span className="font-bold">
-                      {following.toLocaleString()}
+                      {(profileStats?.following_count || 0).toLocaleString()}
                     </span>{" "}
                     Following
                   </div>
@@ -158,6 +220,14 @@ export const ProfileHeader = ({
           </div>
         </div>
       </CardContent>
+
+      <FollowListModal
+        isOpen={followModal.isOpen}
+        onClose={handleCloseModal}
+        userId={userId || ""}
+        type={followModal.type}
+        title={followModal.title}
+      />
     </Card>
   );
 };

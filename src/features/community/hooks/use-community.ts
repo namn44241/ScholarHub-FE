@@ -4,7 +4,7 @@ import {
   communityService,
   type ICreatePostRequest,
 } from "../services/community";
-import type { IPost } from "../utils/types";
+import type { IConnection, IPost } from "../utils/types";
 
 export const communityKeys = {
   all: ["community"] as const,
@@ -13,6 +13,8 @@ export const communityKeys = {
   postDetails: () => [...communityKeys.posts(), "detail"] as const,
   postDetail: (id: string) => [...communityKeys.postDetails(), id] as const,
   savedPosts: () => [...communityKeys.all, "saved"] as const,
+  follows: () => [...communityKeys.all, "follows"] as const,
+  connections: () => [...communityKeys.all, "connections"] as const,
 };
 
 export const useGetCommunityPosts = (page: number = 1, limit: number = 20) => {
@@ -416,5 +418,70 @@ export const useDeletePost = () => {
         queryKey: [...communityKeys.savedPosts(), "count"],
       });
     },
+  });
+};
+
+export const useFollowUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => communityService.followUser(userId),
+    onMutate: async (userId) => {
+      const connectionsKey = communityKeys.connections();
+
+      await queryClient.cancelQueries({ queryKey: connectionsKey });
+      const previousConnections = queryClient.getQueryData(connectionsKey);
+
+      queryClient.setQueryData(connectionsKey, (old: any) => {
+        const filtered = old.filter((connection: IConnection) => {
+          const match = String(connection.id) !== String(userId);
+          return match;
+        });
+
+        return filtered;
+      });
+
+      return { previousConnections, connectionsKey };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousConnections && context?.connectionsKey) {
+        queryClient.setQueryData(
+          context.connectionsKey,
+          context.previousConnections
+        );
+      }
+    },
+    onSettled: (_data, _error, _userId) => {
+      queryClient.invalidateQueries({ queryKey: communityKeys.connections() });
+      queryClient.invalidateQueries({ queryKey: communityKeys.follows() });
+      queryClient.invalidateQueries({ queryKey: ["profile", "stats"] });
+    },
+  });
+};
+
+export const useUnfollowUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => communityService.unfollowUser(userId),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: communityKeys.follows() });
+      queryClient.invalidateQueries({ queryKey: communityKeys.connections() });
+    },
+  });
+};
+
+export const useGetConnections = () => {
+  return useQuery({
+    queryKey: communityKeys.connections(),
+    queryFn: async () => {
+      const response = await communityService.getConnectionSuggestions();
+      if (!response.success) {
+        throw new Error(response.message || "Không thể tải gợi ý kết nối");
+      }
+      return response.payload.connections;
+    },
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
   });
 };

@@ -7,4 +7,8 @@ export const USER_PROFILE_ENDPOINTS = {
   CERTIFICATION: `/user/certification`,
   PUBLICATION: `/user/publication`,
   REFERENCE: `/user/reference`,
+  DOCUMENT: `/profile/document`,
+
+  PROFILE_STATS: (userId: string) => `/user/profile/${userId}/stats`, 
+  PROFILE_MEDIA: (mediaType: "avatar" | "banner") => `/user/profile-media/${mediaType}`,
 };

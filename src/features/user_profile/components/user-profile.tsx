@@ -5,8 +5,8 @@ import CertificationsSection from "./certifications-section";
 import DocumentsSection from "./documents-section";
 import EducationSection from "./educations-section";
 import ExperienceSection from "./experiences-section";
-import PersonalInfoSection from "./personal-infos-section";
 import { ProfileHeader } from "./header-section";
+import PersonalInfoSection from "./personal-infos-section";
 import PublicationsSection from "./publications-section";
 import ReferencesSection from "./references-section";
 
@@ -29,8 +29,7 @@ export const UserProfile = ({
         <ProfileHeader
           userData={user}
           isCurrentUser={isCurrentUser}
-          followers={0}
-          following={0}
+          userId={userId}
           createdAt={user?.created_at}
         />
       )}
