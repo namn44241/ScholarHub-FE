@@ -22,10 +22,7 @@ export interface IMultipleUploadResponse {
 }
 
 export const uploadService = {
-  async uploadFile(file: File): Promise<IUploadResponse> {
-    const formData = new FormData();
-    formData.append("file", file);
-
+  async uploadFile(formData: FormData): Promise<IUploadResponse> {
     try {
       const response = await customFetch<IUploadResponse>(
         COMMUNITY_ENDPOINTS.UPLOAD_FILE,

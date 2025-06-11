@@ -52,11 +52,6 @@ export const customFetch = async <T = any>(
 
   const headers = new Headers(IfetchOptions.headers);
 
-  // set default content type ONLY if not FormData
-  if (!headers.has("Content-Type") && !(IfetchOptions.body instanceof FormData)) {
-    headers.set("Content-Type", "application/json");
-  }
-
   // set token to header
   if (!skipAuth) {
     const { access_token } = authTokenManagement.getTokens();
@@ -110,6 +105,10 @@ export const apiClient = {
     customFetch<T>(url, {
       ...options,
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
       body: data ? JSON.stringify(data) : undefined,
     }),
 
@@ -117,6 +116,10 @@ export const apiClient = {
     customFetch<T>(url, {
       ...options,
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json", 
+        ...options?.headers,
+      },
       body: data ? JSON.stringify(data) : undefined,
     }),
 
@@ -124,13 +127,21 @@ export const apiClient = {
     customFetch<T>(url, {
       ...options,
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
       body: data ? JSON.stringify(data) : undefined,
     }),
 
   delete: <T = any>(url: string, data?: any, options?: IFetchOptions) =>
     customFetch<T>(url, {
       ...options,
-      method: "DELETE",
+      method: "DELETE", 
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
       body: data ? JSON.stringify(data) : undefined,
     }),
 };

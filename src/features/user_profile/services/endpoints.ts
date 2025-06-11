@@ -8,3 +8,14 @@ export const USER_PROFILE_ENDPOINTS = {
   PUBLICATION: `/user/publication`,
   REFERENCE: `/user/reference`,
 };
+
+export const endpoints = {
+  profile: {
+    documents: {
+      get: "/profile/document",
+      create: "/profile/document", 
+      update: "/profile/document",
+      delete: "/profile/document",
+    },
+  },
+};
