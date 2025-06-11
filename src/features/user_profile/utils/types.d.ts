@@ -5,6 +5,7 @@ import {
   EDUCATION_TYPE,
   EXPERIENCE_TYPE,
   GENDER_TYPE,
+  PUBLICATION_TYPE,
   REFERENCE_TYPE,
 } from "./constants";
 
@@ -89,7 +90,7 @@ export interface IPublication {
   title?: string;
   type: PUBLICATION_TYPE;
   venue_name?: string;
-  publish_date?: string;
+  publication_date?: string;
   url?: string;
 }
 
