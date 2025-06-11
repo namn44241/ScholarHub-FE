@@ -23,20 +23,32 @@ import {
 import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useGetPersonal } from "../hooks/use-personal";
+import { useGetProfileStats } from "../hooks/use-profile-stats";
 import type { IProfileHeaderProps } from "../utils/types";
 import { ImageUploadOverlay } from "./image-upload-overlay";
 import { BACKEND_IP } from "@/utils/endpoints";
+import { FollowListModal } from "./follow-list-modal";
 
 export const ProfileHeader = ({
   userData,
   isCurrentUser = false,
-  followers = 0,
-  following = 0,
+  userId,
   createdAt,
 }: IProfileHeaderProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followModal, setFollowModal] = useState<{
+    isOpen: boolean;
+    type: "followers" | "following";
+    title: string;
+  }>({
+    isOpen: false,
+    type: "followers",
+    title: "",
+  });
   const location = useLocation();
   const { data, isLoading } = useGetPersonal();
+  
+  const { data: profileStats, isLoading: statsLoading } = useGetProfileStats(userId);
 
   const fullName = data?.first_name
     ? `${data.first_name}${data.middle_name ? ` ${data.middle_name}` : ""} ${
@@ -54,7 +66,27 @@ export const ProfileHeader = ({
     return fullUrl;
   };
 
-  if (isLoading) {
+  const handleShowFollowers = () => {
+    setFollowModal({
+      isOpen: true,
+      type: "followers",
+      title: "Followers",
+    });
+  };
+
+  const handleShowFollowing = () => {
+    setFollowModal({
+      isOpen: true,
+      type: "following", 
+      title: "Following",
+    });
+  };
+
+  const handleCloseModal = () => {
+    setFollowModal(prev => ({ ...prev, isOpen: false }));
+  };
+
+  if (isLoading || statsLoading) {
     return <ProfileHeaderSkeleton isCurrentUser={isCurrentUser || false} />;
   }
 
@@ -150,15 +182,21 @@ export const ProfileHeader = ({
 
               <div className="flex flex-col items-end space-y-3 md:text-right">
                 <div className="flex gap-4 text-sm">
-                  <div>
+                  <div 
+                    className="cursor-pointer hover:text-foreground transition-colors"
+                    onClick={handleShowFollowers}
+                  >
                     <span className="font-bold">
-                      {followers.toLocaleString()}
+                      {(profileStats?.followers_count || 0).toLocaleString()}
                     </span>{" "}
                     Followers
                   </div>
-                  <div>
+                  <div 
+                    className="cursor-pointer hover:text-foreground transition-colors"
+                    onClick={handleShowFollowing}
+                  >
                     <span className="font-bold">
-                      {following.toLocaleString()}
+                      {(profileStats?.following_count || 0).toLocaleString()}
                     </span>{" "}
                     Following
                   </div>
@@ -182,6 +220,14 @@ export const ProfileHeader = ({
           </div>
         </div>
       </CardContent>
+
+      <FollowListModal
+        isOpen={followModal.isOpen}
+        onClose={handleCloseModal}
+        userId={userId}
+        type={followModal.type}
+        title={followModal.title}
+      />
     </Card>
   );
 };

@@ -10,6 +10,13 @@ export const COMMUNITY_ENDPOINTS = {
   POST_SAVE: (postId: string) => `/community/posts/${postId}/save`,
   POST_DELETE: (postId: string) => `/community/posts/${postId}/delete`,
 
+  // follow endpoints
+  FOLLOW: "/community/follow",
+  FOLLOWERS: (userId: string) => `/community/followers?user_id=${userId}`,
+  FOLLOWING: (userId: string) => `/community/following?user_id=${userId}`,
+  FOLLOW_USER: (userId: string) => `/community/follow?user_id=${userId}`,
+  UNFOLLOW_USER: (userId: string) => `/community/follow?user_id=${userId}`,
+
   // comments endpoints
   POST_COMMENTS: (postId: string) => `/community/posts/${postId}/comments`,
   COMMENT_REACTION: (postId: string, commentId: string) =>

@@ -29,8 +29,7 @@ export const UserProfile = ({
         <ProfileHeader
           userData={user}
           isCurrentUser={isCurrentUser}
-          followers={0}
-          following={0}
+          userId={userId}
           createdAt={user?.created_at}
         />
       )}

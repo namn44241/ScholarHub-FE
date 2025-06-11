@@ -94,7 +94,7 @@ export interface IPublication {
   title?: string;
   type: PUBLICATION_TYPE;
   venue_name?: string;
-  publish_date?: string;
+  publication_date?: string;
   url?: string;
 }
 
@@ -117,10 +117,9 @@ export interface IReference {
 }
 
 export interface IProfileHeaderProps {
-  userData?: IUser;
+  userData?: any;
   isCurrentUser?: boolean;
-  followers?: number;
-  following?: number;
+  userId: string;
   createdAt?: string;
 }
 
