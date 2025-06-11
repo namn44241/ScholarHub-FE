@@ -112,7 +112,7 @@ export const communityService = {
   },
 
   async deletePost(postId: string) {
-    const response = await apiClient.delete(
+    const response = await apiClient.post(
       COMMUNITY_ENDPOINTS.POST_DELETE(postId)
     );
     return response;

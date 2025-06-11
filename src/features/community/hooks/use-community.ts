@@ -326,7 +326,14 @@ export const useDeletePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (postId: string) => communityService.deletePost(postId),
+    mutationFn: async (postId: string) => {
+      try {
+        const result = await communityService.deletePost(postId);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    },
     onMutate: async (postId) => {
       await queryClient.cancelQueries({ queryKey: communityKeys.postsList() });
       await queryClient.cancelQueries({ queryKey: communityKeys.savedPosts() });
@@ -348,8 +355,8 @@ export const useDeletePost = () => {
         posts.filter((post) => post.id !== postId);
 
       postsQueries.forEach((query) => {
-        const data = query.state.data as IPost[];
-        if (data) {
+        const data = query.state.data;        
+        if (data && Array.isArray(data)) {
           previousData.set(query.queryKey, data);
           queryClient.setQueryData(query.queryKey, removePost(data));
         }
@@ -357,8 +364,8 @@ export const useDeletePost = () => {
 
       // Optimistically update saved posts queries
       savedQueries.forEach((query) => {
-        const data = query.state.data as IPost[];
-        if (data) {
+        const data = query.state.data;        
+        if (data && Array.isArray(data)) {
           previousData.set(query.queryKey, data);
           queryClient.setQueryData(query.queryKey, removePost(data));
         }
@@ -370,8 +377,8 @@ export const useDeletePost = () => {
       if (typeof previousSavedCount === "number") {
         let wasPostSaved = false;
         for (const query of [...postsQueries, ...savedQueries]) {
-          const data = query.state.data as IPost[];
-          if (data) {
+          const data = query.state.data;
+          if (data && Array.isArray(data)) {
             const post = data.find((p) => p.id === postId);
             if (post?.userSaved) {
               wasPostSaved = true;
