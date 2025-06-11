@@ -24,6 +24,8 @@ import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useGetPersonal } from "../hooks/use-personal";
 import type { IProfileHeaderProps } from "../utils/types";
+import { ImageUploadOverlay } from "./image-upload-overlay";
+import { BACKEND_IP } from "@/utils/endpoints";
 
 export const ProfileHeader = ({
   userData,
@@ -42,29 +44,51 @@ export const ProfileHeader = ({
       }`
     : "User";
 
+  const avatarUrl = data?.avatar || userData?.avatar;
+  const bannerUrl = data?.banner || userData?.banner;
+
+  const getImageUrl = (path: string | undefined) => {
+    if (!path) return "/placeholder.svg";
+    if (path.startsWith("http")) return path;
+    const fullUrl = `${BACKEND_IP}/${path}`;
+    return fullUrl;
+  };
+
   if (isLoading) {
     return <ProfileHeaderSkeleton isCurrentUser={isCurrentUser || false} />;
   }
 
   return (
     <Card className="pt-0 w-full">
-      <div className="relative w-full h-48 overflow-hidden">
+      {/* Banner with Upload Overlay */}
+      <ImageUploadOverlay
+        mediaType="banner"
+        isCurrentUser={isCurrentUser}
+        className="relative w-full h-48 overflow-hidden rounded-t-xl"
+      >
         <LazyLoadImage
-          src={userData?.banner || "/placeholder.svg"}
+          src={getImageUrl(bannerUrl)}
           alt="Profile banner"
-          className="absolute inset-0 dark:brightness-[0.8] rounded-t-xl w-full h-full object-cover"
+          className="absolute inset-0 dark:brightness-[0.8] w-full h-full object-cover"
         />
-      </div>
+      </ImageUploadOverlay>
 
       <CardContent>
         <div className="relative">
-          <div className="-top-16 left-4 sm:left-6 absolute rounded-full ring-4 ring-background">
-            <Avatar className="size-32">
-              <AvatarImage src={userData?.avatar} alt={fullName} />
-              <AvatarFallback className="font-bold text-4xl">
-                {fullName[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+          {/* Avatar with Upload Overlay */}
+          <div className="-top-16 left-4 sm:left-6 absolute ring-4 ring-background rounded-full">
+            <ImageUploadOverlay
+              mediaType="avatar"
+              isCurrentUser={isCurrentUser}
+              className="rounded-full"
+            >
+              <Avatar className="size-32">
+                <AvatarImage src={getImageUrl(avatarUrl)} alt={fullName} />
+                <AvatarFallback className="font-bold text-4xl">
+                  {fullName[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </ImageUploadOverlay>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
