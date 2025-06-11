@@ -22,7 +22,7 @@ export const useGetChat = (params: { user_id: string; thread_id: string }) => {
     queryKey: chatbotKeys.chat(user_id, thread_id),
     queryFn: async () => {
       const response = await chatbotService.getChat({ user_id, thread_id });
-      return response.payload.messages; 
+      return response.payload.messages;
     },
     enabled: !!user_id && !!thread_id,
     staleTime: STALE_TIME,
@@ -51,7 +51,7 @@ export const usePostChat = () => {
         };
 
         const botResponse = {
-          content: data, 
+          content: data,
           role: "assistant",
           created_at: new Date().toISOString(),
         };
@@ -62,6 +62,7 @@ export const usePostChat = () => {
         );
       }
 
+      // Invalidate để refetch data mới từ server
       queryClient.invalidateQueries({
         queryKey: chatbotKeys.chat(variables.user_id, variables.thread_id),
       });
@@ -78,36 +79,55 @@ export const useNewThread = () => {
 
   return useMutation({
     mutationFn: async (threadData: IThreadDTO) => {
+      console.log("Creating thread with data:", threadData);
       const response = await chatbotService.newThread(threadData);
+      console.log("Thread creation response:", response);
       return response.payload.thread_id;
     },
     onSuccess: (newThreadId, variables) => {
+      console.log("Thread created successfully:", newThreadId);
+
+      // Tạo thread object với đúng structure
+      const newThread = {
+        thread_id: newThreadId, // Sử dụng thread_id thay vì id
+        user_id: variables.user_id,
+        created_at: new Date().toISOString(),
+        message_count: 0,
+        last_message: new Date().toISOString(),
+        latest_question: null,
+        latest_answer: null,
+      };
+
+      // Update cache với thread mới
       const previousThreads = queryClient.getQueryData(
         chatbotKeys.threadsList(variables.user_id)
       ) as Array<any> | undefined;
 
       if (previousThreads) {
-        const newThread = {
-          id: newThreadId,
-          created_at: new Date().toISOString(),
-          message_count: 0,
-          last_message: null,
-        };
-
         queryClient.setQueryData(chatbotKeys.threadsList(variables.user_id), [
           newThread,
           ...previousThreads,
         ]);
+      } else {
+        // Nếu chưa có threads, tạo array mới
+        queryClient.setQueryData(chatbotKeys.threadsList(variables.user_id), [
+          newThread,
+        ]);
       }
 
+      // Khởi tạo chat data rỗng cho thread mới
       queryClient.setQueryData(
         chatbotKeys.chat(variables.user_id, newThreadId || ""),
         []
       );
 
+      // Invalidate để đảm bảo data được sync
       queryClient.invalidateQueries({
         queryKey: chatbotKeys.threadsList(variables.user_id),
       });
+    },
+    onError: (error) => {
+      console.error("Failed to create thread:", error);
     },
   });
 };
@@ -134,7 +154,10 @@ export const useDeleteThread = () => {
       if (previousThreads) {
         queryClient.setQueryData(
           chatbotKeys.threadsList(variables.user_id),
-          previousThreads.filter((thread) => thread.id !== variables.thread_id)
+          // Sử dụng thread_id thay vì id
+          previousThreads.filter(
+            (thread) => thread.thread_id !== variables.thread_id
+          )
         );
       }
 
@@ -166,7 +189,9 @@ export const useThreadsList = (params: IThreadDTO) => {
   return useQuery({
     queryKey: chatbotKeys.threadsList(user_id),
     queryFn: async () => {
-      const response = await chatbotService.threadsList({ user_id });
+      console.log("Fetching threads for user:", user_id);
+      const response = await chatbotService.threadsList();
+      console.log("Threads response:", response);
       return response.payload.threads;
     },
     enabled: !!user_id,

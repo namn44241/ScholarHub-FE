@@ -39,7 +39,7 @@ export const publicationSchema = z.object({
   title: z.string().min(1, "Publication title is required"),
   type: z.nativeEnum(PUBLICATION_TYPE),
   venue_name: z.string().min(1, "Venue name is required"),
-  publication_date: z
+  publish_date: z
     .string()
     .optional()
     .refine((val) => !val || validateDateFormat(val), {
@@ -70,8 +70,8 @@ const PublicationForm = ({
           title: initialValues.title || "",
           type: initialValues.type || PUBLICATION_TYPE.JOURNAL,
           venue_name: initialValues.venue_name || "",
-          publication_date: initialValues.publication_date
-            ? formatDateFromISO(initialValues.publication_date)
+          publish_date: initialValues.publish_date
+            ? formatDateFromISO(initialValues.publish_date)
             : undefined,
           url: initialValues.url || "",
         }
@@ -79,7 +79,7 @@ const PublicationForm = ({
           title: "",
           type: PUBLICATION_TYPE.JOURNAL,
           venue_name: "",
-          publication_date: undefined,
+          publish_date: undefined,
           url: "",
         },
   });
@@ -90,8 +90,8 @@ const PublicationForm = ({
     // Convert DD/MM/YYYY date to ISO format before submitting
     const formattedData = {
       ...data,
-      publication_date: data.publication_date
-        ? convertToISODate(data.publication_date)?.toString()
+      publish_date: data.publish_date
+        ? convertToISODate(data.publish_date)?.toString()
         : undefined,
     };
 
@@ -218,11 +218,11 @@ const PublicationForm = ({
 
             <FormField
               control={form.control}
-              name="publication_date"
+              name="publish_date"
               render={() => (
                 <DefaultDateInput
                   control={form.control}
-                  name="publication_date"
+                  name="publish_date"
                   label="Publication Date (optional)"
                   placeholder="DD/MM/YYYY"
                   required={false}

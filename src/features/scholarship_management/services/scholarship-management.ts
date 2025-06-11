@@ -44,4 +44,13 @@ export const scholarshipService = {
     );
     return response as IPostScholarshipResponse;
   },
+
+  deleteScholarship: async (
+    scholarshipId: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const response = await apiClient.delete(
+      `${SCHOLARSHIP_MANAGE_ENDPOINTS.DELETE_SCHOLARSHIP}?id=${scholarshipId}`
+    );
+    return response as { success: boolean; message: string };
+  },
 };

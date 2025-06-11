@@ -43,6 +43,8 @@ export const ScholarshipTable = () => {
     form,
     isSubmitting,
     onSubmit,
+    onDelete,
+    isDeleting,
     openDialog,
     scholarshipId,
   } = useScholarshipFormDialog()
@@ -254,9 +256,10 @@ export const ScholarshipTable = () => {
         formType={formType}
         form={form}
         isSubmitting={isSubmitting}
+        isDeleting={isDeleting}
         isLoading={false}
+        onDelete={onDelete}
         onSubmit={onSubmit}
-        handleDelete={() => console.log("Delete scholarship")}
         scholarshipId={scholarshipId || ""}
       />
     </div>

@@ -94,7 +94,7 @@ export interface IPublication {
   title?: string;
   type: PUBLICATION_TYPE;
   venue_name?: string;
-  publication_date?: string;
+  publish_date?: string;
   url?: string;
 }
 

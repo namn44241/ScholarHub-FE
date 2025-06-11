@@ -9,9 +9,10 @@ export interface IScholarshipFormDialogProps {
   formType: FormType;
   scholarshipId: string;
   isSubmitting: boolean;
+  isDeleting: boolean;
   isLoading: boolean;
   onSubmit: (data: CreateScholarshipDTO | IUpdateScholarshipDTO) => void;
-  handleDelete: () => void;
+  onDelete: () => void;
 }
 
 export interface IScholarshipActionBarProps {
