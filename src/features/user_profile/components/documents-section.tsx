@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BACKEND_IP } from "@/utils/endpoints";
 import { Eye, FileText, PackageOpen, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -130,7 +131,7 @@ const DocumentsSection = ({
                     <div className="flex gap-2">
                       <Button variant="outline" size="icon">
                         <a
-                          href={`http://localhost:8000${document.file_path}`}
+                          href={`${BACKEND_IP}/${document.file_path}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center"

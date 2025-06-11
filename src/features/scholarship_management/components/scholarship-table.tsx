@@ -203,7 +203,7 @@ export const ScholarshipTable = () => {
               <DropdownMenuItem asChild>
                 <Link
                   to="/scholarship-management/$scholarshipId"
-                  params={{ scholarshipId: String(scholarshipId) }}
+                  params={{ scholarshipId: String(currentScholarship.id)}}
                 >
                   <FileUser className="size-4" />See applications
                 </Link>
